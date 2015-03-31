@@ -1,0 +1,10 @@
+.lock-waf_darwin_build
+build/
+test/german_fuzzy_text_test
+test/stringbuffer_test
+test/*.out
+test/*.dSYM
+*.sw?
+.sass-cache/
+_site/
+.DS_Store

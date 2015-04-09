@@ -27,16 +27,13 @@
    * Customize to your liking.
    */
 
-  // All variables should be in camelcase - too specific for CloudPebble builds
-  // to fail
+  // All variables should be in camelcase - too specific for CloudPebble builds to fail
   // "camelcase": true,
 
-  // Do not allow blocks without { } - too specific for CloudPebble builds to
-  // fail.
+  // Do not allow blocks without { } - too specific for CloudPebble builds to fail.
   // "curly": true,
 
-  // Prohibits the use of immediate function invocations without wrapping them
-  // in parentheses
+  // Prohibits the use of immediate function invocations without wrapping them in parentheses
   "immed": true,
 
   // Don't enforce indentation, because it's not worth failing builds over

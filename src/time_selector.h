@@ -1,5 +1,7 @@
+#pragma once
+
 #include <pebble.h>
 
-void show_time_selector(struct tm initial_time);
+typedef void (*TimeSelected)(struct tm value);
+void show_time_selector(struct tm initial, TimeSelected callback);
 void hide_time_selector(void);
-struct tm get_selected_time(void);

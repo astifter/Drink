@@ -1,7 +1,7 @@
 {
   "appKeys": {},
   "capabilities": [
-    "configurable"
+    ""
   ],
   "companyName": "andreas.neustifter@gmail.com",
   "longName": "Drink!",
@@ -9,30 +9,25 @@
   "resources": {
     "media": [
       {
-        "file": "images/right.png",
-        "name": "IMG_ACTIONBAR_RIGHT",
-        "type": "png"
-      },
-      {
         "file": "images/up.png",
-        "name": "IMG_ACTIONBAR_UP",
+        "name": "IMAGE_UP",
         "type": "png"
       },
       {
         "file": "images/down.png",
-        "name": "IMG_ACTIONBAR_DOWN",
+        "name": "IMAGE_DOWN",
         "type": "png"
       },
       {
         "file": "images/checkmark.png",
-        "name": "IMG_ACTIONBAR_CHECKMARK",
+        "name": "IMAGE_CHECKMARK",
         "type": "png"
       }
     ]
   },
   "sdkVersion": "3",
   "shortName": "Drink!",
-  "uuid": "1ac6b193-28f7-4529-86e9-e26f3e4ce03d",
+  "uuid": "403d89b3-e4a6-4667-a988-632f5282979e",
   "versionCode": 1,
   "versionLabel": "1.0",
   "watchapp": {

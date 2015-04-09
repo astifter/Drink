@@ -8,3 +8,4 @@ test/*.dSYM
 .sass-cache/
 _site/
 .DS_Store
+nohup.out

@@ -7,9 +7,9 @@ if [[ -n "$1" ]]; then
         target="--emulator $1"
     else
         target="--phone $1"
+        echo -n "Press [Enter] to install, [Ctrl-C] to exit."; read -n 1 -s;
     fi
         
-    echo -n "Press [Enter] to install, [Ctrl-C] to exit."; read -n 1 -s;
     pebble install $target
     pebble logs $target
 fi

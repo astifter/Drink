@@ -6,7 +6,6 @@
 static Window *s_window;
 static GBitmap *s_res_image_up;
 static GBitmap *s_res_image_settings;
-static GFont s_res_gothic_28_bold;
 static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
@@ -18,7 +17,6 @@ static void initialise_ui(void) {
   
   s_res_image_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP);
   s_res_image_settings = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SETTINGS);
-  s_res_gothic_28_bold = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
   // s_actionbarlayer_1
   s_actionbarlayer_1 = action_bar_layer_create();
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
@@ -28,21 +26,23 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(5, 5, 117, 59));
+  s_textlayer_1 = text_layer_create(GRect(0, 17, 118, 16));
   text_layer_set_background_color(s_textlayer_1, GColorClear);
-  text_layer_set_text(s_textlayer_1, "You drank x glasses!");
-  text_layer_set_font(s_textlayer_1, s_res_gothic_28_bold);
+  text_layer_set_text(s_textlayer_1, "Text layer");
+  text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentRight);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(28, 115, 90, 16));
+  s_textlayer_2 = text_layer_create(GRect(0, 115, 118, 16));
   text_layer_set_background_color(s_textlayer_2, GColorClear);
   text_layer_set_text(s_textlayer_2, "Stats & Settings");
+  text_layer_set_text_alignment(s_textlayer_2, GTextAlignmentRight);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(38, 67, 80, 16));
+  s_textlayer_3 = text_layer_create(GRect(0, 67, 118, 16));
   text_layer_set_text(s_textlayer_3, "I drank a glass!");
+  text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentRight);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
 }
 
@@ -61,7 +61,7 @@ static int drank_glasses;
 static char drank_glasses_string[100];
 
 static void update_drank_glasses(void) {
-  snprintf(drank_glasses_string, 10, "You drank\n%d glasses!", drank_glasses);
+  snprintf(drank_glasses_string, 99, "You drank %d glasses!", drank_glasses);
   text_layer_set_text(s_textlayer_1, drank_glasses_string);  
 }
 

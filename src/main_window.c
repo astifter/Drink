@@ -25,7 +25,7 @@ static void destroy_ui(void) {
 // END AUTO-GENERATED UI CODE
 
 #define NUM_MENU_SECTIONS 1
-#define NUM_FIRST_MENU_ITEMS 4
+#define NUM_FIRST_MENU_ITEMS 3
 
 static struct tm first_reminder;
 static struct tm interval;

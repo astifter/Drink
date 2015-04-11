@@ -30,12 +30,8 @@
             }
         ]
     },
-    "sdkVersion": "3",
+    "sdkVersion": "2",
     "shortName": "Drink!",
-    "targetPlatforms": [
-        "aplite",
-        "basalt"
-    ],
     "uuid": "403d89b3-e4a6-4667-a988-632f5282979e",
     "versionCode": 1,
     "versionLabel": "1.0",

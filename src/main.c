@@ -1,12 +1,12 @@
 #include <pebble.h>
   
-#include "main_window.h"
+#include "counting_window.h"
 
 Window *my_window;
 
 void handle_init(void) {
   my_window = window_create();
-  show_main_window();
+  show_counting_window();
 }
 
 void handle_deinit(void) {

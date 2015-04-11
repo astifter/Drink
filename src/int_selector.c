@@ -20,7 +20,7 @@ static void initialise_ui(void) {
   s_res_image_checkmark = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHECKMARK);
   s_res_image_down = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DOWN);
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(4, 63, 110, 42));
+  s_textlayer_1 = text_layer_create(GRect(6, 54, 110, 42));
   text_layer_set_background_color(s_textlayer_1, GColorClear);
   text_layer_set_text(s_textlayer_1, "00");
   text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);

@@ -24,7 +24,7 @@ static void initialise_ui(void) {
   s_res_image_checkmark = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHECKMARK);
   s_res_image_down = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DOWN);
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(4, 63, 54, 42));
+  s_textlayer_1 = text_layer_create(GRect(4, 55, 54, 42));
   text_layer_set_background_color(s_textlayer_1, GColorClear);
   text_layer_set_text(s_textlayer_1, "00");
   text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
@@ -32,7 +32,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(60, 63, 54, 42));
+  s_textlayer_2 = text_layer_create(GRect(60, 55, 54, 42));
   text_layer_set_background_color(s_textlayer_2, GColorClear);
   text_layer_set_text(s_textlayer_2, "00");
   text_layer_set_text_alignment(s_textlayer_2, GTextAlignmentCenter);
@@ -40,7 +40,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(6, 63, 105, 42));
+  s_textlayer_3 = text_layer_create(GRect(6, 55, 105, 42));
   text_layer_set_background_color(s_textlayer_3, GColorClear);
   text_layer_set_text(s_textlayer_3, ":");
   text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentCenter);
@@ -48,11 +48,11 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
   
   // s_inverterlayer_1
-  s_inverterlayer_1 = inverter_layer_create(GRect(9, 64, 46, 40));
+  s_inverterlayer_1 = inverter_layer_create(GRect(9, 56, 46, 40));
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverterlayer_1);
   
   // s_inverterlayer_2
-  s_inverterlayer_2 = inverter_layer_create(GRect(65, 64, 46, 40));
+  s_inverterlayer_2 = inverter_layer_create(GRect(65, 56, 46, 40));
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverterlayer_2);
   
   // s_actionbarlayer_1

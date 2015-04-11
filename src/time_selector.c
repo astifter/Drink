@@ -80,7 +80,7 @@ static void destroy_ui(void) {
 // END AUTO-GENERATED UI CODE
 
 static struct tm selected_time;
-static int selected_time_index = 1;
+static int selected_time_index;
 static char selected_time_string1[20];
 static char selected_time_string2[20];
 static TimeSelected callback;
@@ -146,6 +146,7 @@ static void handle_window_unload(Window* window) {
 void show_time_selector(struct tm initial, TimeSelected c) {
   callback = c;
   selected_time = initial;
+  selected_time_index = 1;
   initialise_ui();
   action_bar_layer_set_click_config_provider(s_actionbarlayer_1, config_provider);
   layer_set_hidden(inverter_layer_get_layer(s_inverterlayer_2), true);

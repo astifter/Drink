@@ -96,7 +96,7 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
         } break;
         case 2: {
           char buffer[10];
-          snprintf(buffer, 10, "%d", target_number);
+          snprintf(buffer, 10, "%d glasses", target_number);
           menu_cell_basic_draw(ctx, cell_layer, "Target", buffer, NULL);
         } break;
       }

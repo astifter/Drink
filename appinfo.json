@@ -1,45 +1,55 @@
 {
-  "appKeys": {},
-  "capabilities": [
-    ""
-  ],
-  "companyName": "andreas.neustifter@gmail.com",
-  "longName": "Drink!",
-  "projectType": "native",
-  "resources": {
-    "media": [
-      {
-        "file": "images/s.png",
-        "name": "IMAGE_SETTINGS",
-        "type": "png"
-      },
-      {
-        "file": "images/checkmark.png",
-        "name": "IMAGE_CHECKMARK",
-        "type": "png"
-      },
-      {
-        "file": "images/down.png",
-        "name": "IMAGE_DOWN",
-        "type": "png"
-      },
-      {
-        "file": "images/up.png",
-        "name": "IMAGE_UP",
-        "type": "png"
-      }
-    ]
-  },
-  "sdkVersion": "3",
-  "shortName": "Drink!",
-  "uuid": "403d89b3-e4a6-4667-a988-632f5282979e",
-  "versionCode": 1,
-  "versionLabel": "1.0",
-  "watchapp": {
-    "watchface": false
-  },
-  "targetPlatforms": [
-    "aplite",
-    "basalt"
-  ]
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "andreas.neustifter@gmail.com",
+    "longName": "Drink!",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/right.png",
+                "name": "IMAGE_RIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/left.png",
+                "name": "IMAGE_LEFT",
+                "type": "png"
+            },
+            {
+                "file": "images/up.png",
+                "name": "IMAGE_UP",
+                "type": "png"
+            },
+            {
+                "file": "images/down.png",
+                "name": "IMAGE_DOWN",
+                "type": "png"
+            },
+            {
+                "file": "images/checkmark.png",
+                "name": "IMAGE_CHECKMARK",
+                "type": "png"
+            },
+            {
+                "file": "images/s.png",
+                "name": "IMAGE_SETTINGS",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Drink!",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "403d89b3-e4a6-4667-a988-632f5282979e",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
 }

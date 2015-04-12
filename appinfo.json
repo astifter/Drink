@@ -9,6 +9,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/left_right.png",
+                "name": "IMAGE_LEFT_RIGHT",
+                "type": "png"
+            },
+            {
                 "file": "images/right.png",
                 "name": "IMAGE_RIGHT",
                 "type": "png"

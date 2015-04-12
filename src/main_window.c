@@ -3,6 +3,7 @@
 #include "main_window.h"
 #include "time_selector.h"
 #include "int_selector.h"
+#include "statistics.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -113,6 +114,13 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
   switch (cell_index->section) {
     case 0:
+      switch (cell_index->row) {
+        case 0: {
+          show_statistics();
+        } break;
+      }
+      break;
+    case 1:
       switch (cell_index->row) {
         case 0: {
           show_time_selector(first_reminder, first_reminder_selected);

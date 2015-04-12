@@ -6,6 +6,7 @@
 static Window *s_window;
 static GBitmap *s_res_image_up;
 static GBitmap *s_res_image_settings;
+static GFont s_res_gothic_18_bold;
 static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
@@ -17,6 +18,7 @@ static void initialise_ui(void) {
   
   s_res_image_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP);
   s_res_image_settings = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SETTINGS);
+  s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   // s_actionbarlayer_1
   s_actionbarlayer_1 = action_bar_layer_create();
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
@@ -26,10 +28,11 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(0, 17, 118, 16));
+  s_textlayer_1 = text_layer_create(GRect(0, 0, 144, 62));
   text_layer_set_background_color(s_textlayer_1, GColorClear);
-  text_layer_set_text(s_textlayer_1, "Text layer");
-  text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentRight);
+  text_layer_set_text(s_textlayer_1, "You drank x glasses!");
+  text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
+  text_layer_set_font(s_textlayer_1, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // s_textlayer_2
@@ -61,7 +64,7 @@ static int drank_glasses;
 static char drank_glasses_string[100];
 
 static void update_drank_glasses(void) {
-  snprintf(drank_glasses_string, 99, "You drank %d glasses!", drank_glasses);
+  snprintf(drank_glasses_string, 99, "You drank\n%d\nglasses!", drank_glasses);
   text_layer_set_text(s_textlayer_1, drank_glasses_string);  
 }
 

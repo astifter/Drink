@@ -24,8 +24,9 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
-#define NUM_MENU_SECTIONS 1
-#define NUM_FIRST_MENU_ITEMS 3
+#define NUM_MENU_SECTIONS 2
+#define NUM_FIRST_MENU_ITEMS 1
+#define NUM_SECOND_MENU_ITEMS 3
 
 static struct tm first_reminder;
 static struct tm interval;
@@ -54,6 +55,8 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t secti
   switch (section_index) {
     case 0:
       return NUM_FIRST_MENU_ITEMS;
+    case 1:
+      return NUM_SECOND_MENU_ITEMS;
     default:
       return 0;
   }
@@ -66,6 +69,9 @@ static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t s
 static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, uint16_t section_index, void *data) {
   switch (section_index) {
     case 0:
+      menu_cell_basic_header_draw(ctx, cell_layer, "Statistics");
+      break;
+    case 1:
       menu_cell_basic_header_draw(ctx, cell_layer, "Settings");
       break;
   }
@@ -74,6 +80,15 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
 static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
   switch (cell_index->section) {
     case 0:
+      switch (cell_index->row) {
+        case 0: {
+          char buffer[50];
+          snprintf(buffer, 50, "You drank x glasses today.");
+          menu_cell_basic_draw(ctx, cell_layer, "Statistics", buffer, NULL);
+        } break;
+      }
+      break;
+    case 1:
       switch (cell_index->row) {
         case 0: {
           char buffer[10];

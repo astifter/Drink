@@ -13,6 +13,8 @@ static ActionBarLayer *s_actionbarlayer_1;
 static void initialise_ui(void) {
   s_window = window_create();
   window_set_fullscreen(s_window, 0);
+  Layer* s_window_layer = window_get_root_layer(s_window);
+  GRect bounds = layer_get_bounds(s_window_layer);
   
   s_res_bitham_34_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS);
   s_res_image_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP);
@@ -23,7 +25,7 @@ static void initialise_ui(void) {
   text_layer_set_text(s_textlayer_1, "00");
   text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_1, s_res_bitham_34_medium_numbers);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
+  layer_add_child(s_window_layer, (Layer *)s_textlayer_1);
   
   // s_actionbarlayer_1
   s_actionbarlayer_1 = action_bar_layer_create();
@@ -31,7 +33,7 @@ static void initialise_ui(void) {
   action_bar_layer_set_background_color(s_actionbarlayer_1, GColorWhite);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_up);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_down);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
+  layer_add_child(s_window_layer, (Layer *)s_actionbarlayer_1);
 }
 
 static void destroy_ui(void) {

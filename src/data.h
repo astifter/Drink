@@ -1,3 +1,5 @@
+#pragma once
+
 #include <pebble.h>
 
 typedef struct {
@@ -8,7 +10,6 @@ typedef struct {
   unsigned int target_number;
   bool reminders_activated;
 } DrinkData;
-
 DrinkData storage;
 
 void storage_init(void);

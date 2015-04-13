@@ -16,6 +16,8 @@ static TextLayer *s_textlayer_3;
 static void initialise_ui(void) {
   s_window = window_create();
   window_set_fullscreen(s_window, 0);
+  Layer* s_window_layer = window_get_root_layer(s_window);
+  GRect bounds = layer_get_bounds(s_window_layer);
   
   s_res_image_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP);
   s_res_image_settings = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SETTINGS);
@@ -26,7 +28,7 @@ static void initialise_ui(void) {
   action_bar_layer_set_background_color(s_actionbarlayer_1, GColorWhite);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_up);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_settings);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
+  layer_add_child(s_window_layer, (Layer *)s_actionbarlayer_1);
   
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(0, 0, 144, 62));
@@ -34,20 +36,20 @@ static void initialise_ui(void) {
   text_layer_set_text(s_textlayer_1, "You drank x glasses!");
   text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_1, s_res_gothic_18_bold);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
+  layer_add_child(s_window_layer, (Layer *)s_textlayer_1);
   
   // s_textlayer_2
   s_textlayer_2 = text_layer_create(GRect(0, 115, 118, 16));
   text_layer_set_background_color(s_textlayer_2, GColorClear);
   text_layer_set_text(s_textlayer_2, "Stats & Settings");
   text_layer_set_text_alignment(s_textlayer_2, GTextAlignmentRight);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
+  layer_add_child(s_window_layer, (Layer *)s_textlayer_2);
   
   // s_textlayer_3
   s_textlayer_3 = text_layer_create(GRect(0, 67, 118, 16));
   text_layer_set_text(s_textlayer_3, "I drank a glass!");
   text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentRight);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
+  layer_add_child(s_window_layer, (Layer *)s_textlayer_3);
 }
 
 static void destroy_ui(void) {

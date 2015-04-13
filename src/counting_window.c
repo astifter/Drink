@@ -1,7 +1,8 @@
 #include <pebble.h>
 
 #include "main_window.h"
-
+#include "data.h"
+  
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GBitmap *s_res_image_up;
@@ -60,28 +61,26 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
-static bool first_screen_shown = false;
-static int drank_glasses;
 static char drank_glasses_string[100];
 
 static void update_drank_glasses(void) {
-  if (!first_screen_shown) {
+  if (!storage.first_screen_shown) {
     snprintf(drank_glasses_string, 99, "Visit settings to\nenable continous\nreminders.");
-    first_screen_shown = true;
+    storage.first_screen_shown = true;
   } else {
-    if (drank_glasses == 0) {
+    if (storage.drank_glasses == 0) {
       snprintf(drank_glasses_string, 99, "You drank\nnothing\ntoday!");
-    } else if (drank_glasses == 1) {
+    } else if (storage.drank_glasses == 1) {
       snprintf(drank_glasses_string, 99, "You drank\n1\nglass!");
-    } else if (drank_glasses > 1) {
-      snprintf(drank_glasses_string, 99, "You drank\n%d\nglasses!", drank_glasses);
+    } else if (storage.drank_glasses > 1) {
+      snprintf(drank_glasses_string, 99, "You drank\n%d\nglasses!", storage.drank_glasses);
     }
   }
   text_layer_set_text(s_textlayer_1, drank_glasses_string);  
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  drank_glasses++;
+  storage.drank_glasses++;
   update_drank_glasses();
 }
 
@@ -100,7 +99,6 @@ static void handle_window_unload(Window* window) {
 }
 
 void show_counting_window(void) {
-  drank_glasses = 0;
   initialise_ui();
   action_bar_layer_set_click_config_provider(s_actionbarlayer_1, config_provider);
   update_drank_glasses();

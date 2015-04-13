@@ -1,6 +1,7 @@
 #include <pebble.h>
   
 #include "counting_window.h"
+#include "data.h"
 
 Window *my_window;
 
@@ -14,7 +15,9 @@ void handle_deinit(void) {
 }
 
 int main(void) {
+  storage_init();
   handle_init();
   app_event_loop();
   handle_deinit();
+  storage_persist();
 }

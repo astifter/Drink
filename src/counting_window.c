@@ -60,11 +60,23 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
+static bool first_screen_shown = false;
 static int drank_glasses;
 static char drank_glasses_string[100];
 
 static void update_drank_glasses(void) {
-  snprintf(drank_glasses_string, 99, "You drank\n%d\nglasses!", drank_glasses);
+  if (!first_screen_shown) {
+    snprintf(drank_glasses_string, 99, "Visit settings to\nenable continous\nreminders.");
+    first_screen_shown = true;
+  } else {
+    if (drank_glasses == 0) {
+      snprintf(drank_glasses_string, 99, "You drank\nnothing\ntoday!");
+    } else if (drank_glasses == 1) {
+      snprintf(drank_glasses_string, 99, "You drank\n1\nglass!");
+    } else if (drank_glasses > 1) {
+      snprintf(drank_glasses_string, 99, "You drank\n%d\nglasses!", drank_glasses);
+    }
+  }
   text_layer_set_text(s_textlayer_1, drank_glasses_string);  
 }
 
@@ -75,6 +87,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   show_main_window();
+  update_drank_glasses();
 }
 
 static void config_provider(void *ctx) {

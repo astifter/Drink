@@ -27,11 +27,12 @@ static void destroy_ui(void) {
 
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
-#define NUM_SECOND_MENU_ITEMS 3
+#define NUM_SECOND_MENU_ITEMS 4
 
 static struct tm first_reminder;
 static struct tm interval;
 static unsigned int target_number;
+static bool reminders_activated;
 
 void first_reminder_selected(struct tm value) {
   first_reminder = value;
@@ -84,7 +85,7 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
       switch (cell_index->row) {
         case 0: {
           char buffer[50];
-          snprintf(buffer, 50, "You drank x glasses today.");
+          snprintf(buffer, 50, "You drank x glasses.");
           menu_cell_basic_draw(ctx, cell_layer, "Statistics", buffer, NULL);
         } break;
       }
@@ -93,15 +94,24 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
       switch (cell_index->row) {
         case 0: {
           char buffer[10];
+          if (reminders_activated) {
+            snprintf(buffer, 10, "enabled");
+          } else {
+            snprintf(buffer, 10, "disabled");
+          }
+          menu_cell_basic_draw(ctx, cell_layer, "Reminder", buffer, NULL);
+        } break;
+        case 1: {
+          char buffer[10];
           snprintf(buffer, 10, "%02d:%02d", first_reminder.tm_hour, first_reminder.tm_min);
           menu_cell_basic_draw(ctx, cell_layer, "First Reminder", buffer, NULL);
         } break;
-        case 1: {
+        case 2: {
           char buffer[10];
           snprintf(buffer, 10, "%02d:%02d", interval.tm_hour, interval.tm_min);
           menu_cell_basic_draw(ctx, cell_layer, "Interval", buffer, NULL);
         } break;
-        case 2: {
+        case 3: {
           char buffer[10];
           snprintf(buffer, 10, "%d glasses", target_number);
           menu_cell_basic_draw(ctx, cell_layer, "Target", buffer, NULL);
@@ -123,12 +133,16 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
     case 1:
       switch (cell_index->row) {
         case 0: {
-          show_time_selector(first_reminder, first_reminder_selected);
+          reminders_activated = !reminders_activated;
+          layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
         } break;
         case 1: {
-          show_time_selector(interval, interval_selected);
+          show_time_selector(first_reminder, first_reminder_selected);
         } break;
         case 2: {
+          show_time_selector(interval, interval_selected);
+        } break;
+        case 3: {
           show_int_selector(target_number, true, target_number_selected);
         } break;
       }
@@ -146,6 +160,7 @@ void show_main_window(void) {
   interval.tm_min = 30;
   interval.tm_hour = 1;
   target_number = 6;
+  reminders_activated = false;
   initialise_ui();
   menu_layer_set_callbacks(s_menulayer_1, NULL, (MenuLayerCallbacks){
     .get_num_sections = menu_get_num_sections_callback,

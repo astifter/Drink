@@ -9,6 +9,8 @@ typedef struct {
   struct tm interval;
   unsigned int target_number;
   bool reminders_activated;
+  bool s_wakeup_id_valid;
+  WakeupId s_wakeup_id;
 } DrinkData;
 DrinkData storage;
 

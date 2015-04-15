@@ -9,6 +9,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/snooze.png",
+                "name": "IMAGE_SNOOZE",
+                "type": "png"
+            },
+            {
                 "file": "images/s.png",
                 "name": "IMAGE_SETTINGS",
                 "type": "png"

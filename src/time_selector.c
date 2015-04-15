@@ -6,8 +6,8 @@
 static Window *s_window;
 static GFont s_res_bitham_34_medium_numbers;
 static GBitmap *s_res_image_up;
-static GBitmap *s_res_image_down;
 static GBitmap *s_res_image_left_right;
+static GBitmap *s_res_image_down;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 static TextLayer *s_textlayer_3;
@@ -21,8 +21,8 @@ static void initialise_ui(void) {
   
   s_res_bitham_34_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS);
   s_res_image_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP);
-  s_res_image_down = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DOWN);
   s_res_image_left_right = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LEFT_RIGHT);
+  s_res_image_down = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DOWN);
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(4, 55, 54, 42));
   text_layer_set_background_color(s_textlayer_1, GColorClear);
@@ -74,8 +74,8 @@ static void destroy_ui(void) {
   inverter_layer_destroy(s_inverterlayer_2);
   action_bar_layer_destroy(s_actionbarlayer_1);
   gbitmap_destroy(s_res_image_up);
-  gbitmap_destroy(s_res_image_down);
   gbitmap_destroy(s_res_image_left_right);
+  gbitmap_destroy(s_res_image_down);
 }
 // END AUTO-GENERATED UI CODE
 

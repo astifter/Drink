@@ -16,6 +16,8 @@ void storage_init(void) {
     storage.reminders_activated = false;
     storage.first_screen_shown = false;
     storage.drank_glasses = 0;
+    storage.s_wakeup_id_valid = false;
+    storage.s_wakeup_id = -1;
     storage_persist();
   }
 }

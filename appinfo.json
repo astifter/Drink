@@ -9,28 +9,8 @@
     "resources": {
         "media": [
             {
-                "file": "images/left_right.png",
-                "name": "IMAGE_LEFT_RIGHT",
-                "type": "png"
-            },
-            {
-                "file": "images/right.png",
-                "name": "IMAGE_RIGHT",
-                "type": "png"
-            },
-            {
-                "file": "images/left.png",
-                "name": "IMAGE_LEFT",
-                "type": "png"
-            },
-            {
-                "file": "images/up.png",
-                "name": "IMAGE_UP",
-                "type": "png"
-            },
-            {
-                "file": "images/down.png",
-                "name": "IMAGE_DOWN",
+                "file": "images/s.png",
+                "name": "IMAGE_SETTINGS",
                 "type": "png"
             },
             {
@@ -39,8 +19,28 @@
                 "type": "png"
             },
             {
-                "file": "images/s.png",
-                "name": "IMAGE_SETTINGS",
+                "file": "images/down.png",
+                "name": "IMAGE_DOWN",
+                "type": "png"
+            },
+            {
+                "file": "images/up.png",
+                "name": "IMAGE_UP",
+                "type": "png"
+            },
+            {
+                "file": "images/left.png",
+                "name": "IMAGE_LEFT",
+                "type": "png"
+            },
+            {
+                "file": "images/right.png",
+                "name": "IMAGE_RIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/left_right.png",
+                "name": "IMAGE_LEFT_RIGHT",
                 "type": "png"
             }
         ]

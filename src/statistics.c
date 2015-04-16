@@ -20,7 +20,6 @@ static void settext(void) {
   } else {
     buffer += snprintf(buffer, 50, "You drank %d glasses today.\n", storage.drank_glasses);   
   }
-  buffer += snprintf(buffer, 50, "storage.s_wakeup_id: %ld\n", (long)storage.s_wakeup_id);
     
   time_t next_timestamp;
   bool scheduled = timing_handler_next(&next_timestamp);

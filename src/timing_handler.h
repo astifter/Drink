@@ -10,7 +10,7 @@ typedef enum {
 
 typedef void(*timing_handler_callback)(timing_handler_reason reason);
 
-timing_handler_reason timing_handler_init(timing_handler_callback);
+void timing_handler_init(timing_handler_callback);
 void timing_handler_enable(void);
 void timing_handler_snooze(void);
 void timing_handler_cancel(void);

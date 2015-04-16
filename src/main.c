@@ -16,8 +16,7 @@ void timing_callback(timing_handler_reason reason) {
 
 int main(void) {
   storage_init();
-  timing_handler_reason r = timing_handler_init(timing_callback);
-  timing_callback(r);
+  timing_handler_init(timing_callback);
   app_event_loop();
   storage_persist();
 }

@@ -98,7 +98,7 @@ void timing_handler_snooze(void) {
   }  
 }
 
-timing_handler_reason timing_handler_init(timing_handler_callback c) {
+void timing_handler_init(timing_handler_callback c) {
   LOG_FUNC();
   callback = c;
 
@@ -113,14 +113,9 @@ timing_handler_reason timing_handler_init(timing_handler_callback c) {
 
     // Get details and handle the wakeup
     wakeup_get_launch_event(&id, &reason);
-    if (reason == timing_handler_reason_snoozed) {
-      storage.s_snooze_id = -1;
-    } else if (reason == timing_handler_reason_timer) {
-      reschedule_timer();
-    }
 
-    return reason;
+    wakeup_handler(id, reason);
   } else {
-    return timing_handler_reason_startup;
+    wakeup_handler(0, timing_handler_reason_startup);
   }
 }

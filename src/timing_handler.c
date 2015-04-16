@@ -1,80 +1,76 @@
 #include <pebble.h>
   
 #include "data.h"
+#include "timing_handler.h"
   
-static TextLayer* s_output_layer;
-static Window* s_main_window;
+timing_handler_callback callback;
 
-static void wakeup_handler(WakeupId id, int32_t reason) {
-  text_layer_set_text(s_output_layer, "Wakey wakey!");
-  storage.s_wakeup_id_valid = false;
-  storage.s_wakeup_id = -1;
-  storage_persist();
+static void reschedule_timer(void) {
+  time_t t; time(&t);
+  storage.s_wakeup_id = wakeup_schedule(t+180, timing_handler_reason_timer, true);
 }
 
-static void check_wakeup() {
-  if (storage.s_wakeup_id > 0) {
-    // There is a wakeup scheduled soon
-    time_t timestamp = 0;
-    wakeup_query(storage.s_wakeup_id, &timestamp);
-    int seconds_remaining = timestamp - time(NULL);
+static void wakeup_handler(WakeupId id, int32_t r) {
+  timing_handler_reason reason = (timing_handler_reason)r;
+  if (reason == timing_handler_reason_snoozed) {
+    storage.s_snooze_id = -1;
+  } else if (reason == timing_handler_reason_timer) {
+    reschedule_timer();
+  }
 
-    // Show how many seconds to go
-    static char s_buffer[64];
-    snprintf(s_buffer, sizeof(s_buffer), "The event is already scheduled for %d seconds from now!", seconds_remaining);
-    text_layer_set_text(s_output_layer, s_buffer);
+  callback((timing_handler_reason)reason);
+}
+
+bool timing_handler_next(time_t *timestamp) {
+  if (storage.s_wakeup_id_valid) {
+    return wakeup_query(storage.s_wakeup_id, timestamp);
+  } else {
+    return false;
   }
 }
 
-static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  //Check the event is not already scheduled
-  if (!storage.s_wakeup_id_valid) {
-    // Current time + 30 seconds
-    time_t future_time = time(NULL) + 30;
+bool timing_handler_next_snooze(time_t *timestamp) {
+  if (storage.s_wakeup_id_valid) {
+    return wakeup_query(storage.s_snooze_id, timestamp);
+  } else {
+    return false;
+  }
+}
 
-    // Schedule wakeup event and keep the WakeupId
-    storage.s_wakeup_id = wakeup_schedule(future_time, 42, true);
+static void timing_handler_handle(bool enable) {
+  //Check the event is not already scheduled
+  if (!storage.s_wakeup_id_valid && enable) {
+    reschedule_timer();
     storage.s_wakeup_id_valid = true;
     storage_persist();
-
-    // Prepare for waking up later
-    text_layer_set_text(s_output_layer, "This app will now wake up in 30 seconds.\n\nClose me!");
-  } else {
-    // Check existing wakeup
-    check_wakeup();
+  } else if (storage.s_wakeup_id_valid && !enable) {
+    wakeup_cancel_all();
+    storage.s_wakeup_id = -1;
+    storage.s_wakeup_id_valid = false;
+    storage_persist();
   }
 }
 
-static void click_config_provider(void *context) {
-  // Register the ClickHandlers
-  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
+void timing_handler_enable(void) {
+  timing_handler_handle(true);
+}
+void timing_handler_cancel(void) {
+  timing_handler_handle(false);
 }
 
-static void main_window_load(Window *window) {
-  Layer *window_layer = window_get_root_layer(window);
-  GRect window_bounds = layer_get_bounds(window_layer);
-
-  // Create output TextLayer
-  s_output_layer = text_layer_create(GRect(0, 0, window_bounds.size.w, window_bounds.size.h));
-  text_layer_set_text_alignment(s_output_layer, GTextAlignmentCenter);
-  text_layer_set_text(s_output_layer, "Press SELECT to schedule a Wakeup.");
-  layer_add_child(window_layer, text_layer_get_layer(s_output_layer));
+void timing_handler_snooze(void) {
+  if (storage.s_wakeup_id_valid) {
+    int interval_seconds = ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
+    time_t scheduled_time;
+    wakeup_query(storage.s_wakeup_id, &scheduled_time);
+    scheduled_time -= (interval_seconds*2)/3;
+    storage.s_snooze_id = wakeup_schedule(scheduled_time, timing_handler_reason_snoozed, true);
+    storage_persist();
+  }  
 }
 
-static void main_window_unload(Window *window) {
-  // Destroy output TextLayer
-  text_layer_destroy(s_output_layer);
-}
-
-static void init(void) {
-  // Create main Window
-  s_main_window = window_create();
-  window_set_click_config_provider(s_main_window, click_config_provider);
-  window_set_window_handlers(s_main_window, (WindowHandlers) {
-    .load = main_window_load,
-    .unload = main_window_unload,
-  });
-  window_stack_push(s_main_window, true);
+timing_handler_reason timing_handler_init(timing_handler_callback c) {
+  callback = c;
 
   // Subscribe to Wakeup API
   wakeup_service_subscribe(wakeup_handler);
@@ -87,14 +83,9 @@ static void init(void) {
 
     // Get details and handle the wakeup
     wakeup_get_launch_event(&id, &reason);
-    wakeup_handler(id, reason);
-  } else {
-    // Check whether a wakeup will occur soon
-    check_wakeup();
-  }
-}
 
-static void deinit(void) {
-  // Destroy main Window
-  window_destroy(s_main_window);
+    return reason;
+  } else {
+    return timing_handler_reason_startup;
+  }
 }

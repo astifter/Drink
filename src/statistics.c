@@ -20,6 +20,7 @@ static void settext(void) {
   } else {
     buffer += snprintf(buffer, 50, "You drank %d glasses today.\n", storage.drank_glasses);   
   }
+  buffer += snprintf(buffer, 50, "storage.s_wakeup_id: %ld\n", (long)storage.s_wakeup_id);
     
   time_t next_timestamp;
   bool scheduled = timing_handler_next(&next_timestamp);
@@ -28,6 +29,7 @@ static void settext(void) {
     buffer += snprintf(buffer, 50, "Timer scheduled for:\n%04d-%02d-%02d %02d:%02d\n", 
                                    next->tm_year+1900, next->tm_mon+1, next->tm_mday,
                                    next->tm_hour, next->tm_min);
+
     bool snoozed = timing_handler_next_snooze(&next_timestamp);
     if (snoozed) {
       next = localtime(&next_timestamp);

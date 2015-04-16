@@ -2,15 +2,38 @@
   
 #include "data.h"
 #include "timing_handler.h"
+
+#include "watchface_base/logging_helper.h"
   
 timing_handler_callback callback;
 
 static void reschedule_timer(void) {
-  time_t t; time(&t);
-  storage.s_wakeup_id = wakeup_schedule(t+180, timing_handler_reason_timer, true);
+  LOG_FUNC();
+  time_t now; time(&now);
+  struct tm *lt = localtime(&now);
+
+  lt->tm_hour = storage.first_reminder.tm_hour;
+  lt->tm_min  = storage.first_reminder.tm_min;
+
+  time_t schedule = mktime(lt);
+  for (unsigned int i = 0; i < storage.target_number; i++) {
+    if (schedule > now) {
+      storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_timer, true);
+      storage_persist();
+      return;
+    }
+    schedule += ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
+  }
+
+  schedule = mktime(lt);
+  schedule += 3600*24;
+  storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_timer, true);
+  storage_persist();
+  return;
 }
 
 static void wakeup_handler(WakeupId id, int32_t r) {
+  LOG_FUNC();
   timing_handler_reason reason = (timing_handler_reason)r;
   if (reason == timing_handler_reason_snoozed) {
     storage.s_snooze_id = -1;
@@ -22,6 +45,7 @@ static void wakeup_handler(WakeupId id, int32_t r) {
 }
 
 bool timing_handler_next(time_t *timestamp) {
+  LOG_FUNC();
   if (storage.s_wakeup_id_valid) {
     return wakeup_query(storage.s_wakeup_id, timestamp);
   } else {
@@ -30,6 +54,7 @@ bool timing_handler_next(time_t *timestamp) {
 }
 
 bool timing_handler_next_snooze(time_t *timestamp) {
+  LOG_FUNC();
   if (storage.s_wakeup_id_valid) {
     return wakeup_query(storage.s_snooze_id, timestamp);
   } else {
@@ -38,7 +63,8 @@ bool timing_handler_next_snooze(time_t *timestamp) {
 }
 
 static void timing_handler_handle(bool enable) {
-  //Check the event is not already scheduled
+  LOG_FUNC();
+  
   if (!storage.s_wakeup_id_valid && enable) {
     reschedule_timer();
     storage.s_wakeup_id_valid = true;
@@ -52,13 +78,16 @@ static void timing_handler_handle(bool enable) {
 }
 
 void timing_handler_enable(void) {
+  LOG_FUNC();
   timing_handler_handle(true);
 }
 void timing_handler_cancel(void) {
+  LOG_FUNC();
   timing_handler_handle(false);
 }
 
 void timing_handler_snooze(void) {
+  LOG_FUNC();
   if (storage.s_wakeup_id_valid) {
     int interval_seconds = ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
     time_t scheduled_time;
@@ -70,6 +99,7 @@ void timing_handler_snooze(void) {
 }
 
 timing_handler_reason timing_handler_init(timing_handler_callback c) {
+  LOG_FUNC();
   callback = c;
 
   // Subscribe to Wakeup API
@@ -83,6 +113,11 @@ timing_handler_reason timing_handler_init(timing_handler_callback c) {
 
     // Get details and handle the wakeup
     wakeup_get_launch_event(&id, &reason);
+    if (reason == timing_handler_reason_snoozed) {
+      storage.s_snooze_id = -1;
+    } else if (reason == timing_handler_reason_timer) {
+      reschedule_timer();
+    }
 
     return reason;
   } else {

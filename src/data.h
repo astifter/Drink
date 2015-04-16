@@ -12,7 +12,7 @@ typedef struct {
   bool s_wakeup_id_valid;
   WakeupId s_wakeup_id;
 } DrinkData;
-DrinkData storage;
+extern DrinkData storage;
 
 void storage_init(void);
 void storage_persist(void);

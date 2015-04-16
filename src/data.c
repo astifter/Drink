@@ -3,6 +3,7 @@
 #include "data.h"
 
 #define STORAGE_ID 0x21124424
+DrinkData storage;
   
 void storage_init(void) {
   if (persist_exists(STORAGE_ID)) {

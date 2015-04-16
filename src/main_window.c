@@ -6,6 +6,7 @@
 #include "statistics.h"
   
 #include "data.h"
+#include "timing_handler.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -139,6 +140,12 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
       switch (cell_index->row) {
         case 0: {
           storage.reminders_activated = !storage.reminders_activated;
+          storage_persist();
+          if(storage.reminders_activated) {
+            timing_handler_enable();
+          } else {
+            timing_handler_cancel();
+          }
           layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
         } break;
         case 1: {

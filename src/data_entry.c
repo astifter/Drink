@@ -1,7 +1,9 @@
 #include <pebble.h>
 
 #include "data_entry.h"
+
 #include "data.h"
+#include "timing_handler.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -84,7 +86,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void snooze_click_handler(ClickRecognizerRef recognizer, void *context) {
-  // do snoozing
+  timing_handler_snooze();
 }
 
 static void config_provider(void *ctx) {

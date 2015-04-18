@@ -32,7 +32,7 @@ static void destroy_ui(void) {
 
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
-#define NUM_SECOND_MENU_ITEMS 4
+#define NUM_SECOND_MENU_ITEMS 5
 
 void first_reminder_selected(struct tm value) {
   storage.first_reminder = value;
@@ -80,11 +80,11 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
 }
 
 static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
+  char buffer[50];
   switch (cell_index->section) {
     case 0:
       switch (cell_index->row) {
         case 0: {
-          char buffer[50];
           if (storage.drank_glasses == 0) {
             snprintf(buffer, 50, "You drank nothing.");
           } else if (storage.drank_glasses == 1) {
@@ -99,7 +99,6 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
     case 1:
       switch (cell_index->row) {
         case 0: {
-          char buffer[10];
           if (storage.reminders_activated) {
             snprintf(buffer, 10, "enabled");
           } else {
@@ -108,20 +107,25 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
           menu_cell_basic_draw(ctx, cell_layer, "Reminder", buffer, NULL);
         } break;
         case 1: {
-          char buffer[10];
           snprintf(buffer, 10, "%02d:%02d", storage.first_reminder.tm_hour, storage.first_reminder.tm_min);
           menu_cell_basic_draw(ctx, cell_layer, "First Reminder", buffer, NULL);
         } break;
         case 2: {
-          char buffer[10];
           snprintf(buffer, 10, "%02d:%02d", storage.interval.tm_hour, storage.interval.tm_min);
           menu_cell_basic_draw(ctx, cell_layer, "Interval", buffer, NULL);
         } break;
         case 3: {
-          char buffer[10];
           snprintf(buffer, 10, "%d glasses", storage.target_number);
           menu_cell_basic_draw(ctx, cell_layer, "Target", buffer, NULL);
         } break;
+        case 4: {
+          if (storage.auto_dismiss) {
+            snprintf(buffer, 10, "on");
+          } else {
+            snprintf(buffer, 10, "off");
+          }
+          menu_cell_basic_draw(ctx, cell_layer, "Auto Dismiss", buffer, NULL);
+        } break; 
       }
       break;
   }
@@ -156,6 +160,10 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
         } break;
         case 3: {
           show_int_selector(storage.target_number, true, target_number_selected);
+        } break;
+        case 4: {
+          storage.auto_dismiss = !storage.auto_dismiss;
+          layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
         } break;
       }
       break;

@@ -27,7 +27,7 @@ static void reschedule_timer(void) {
 
   schedule = mktime(lt);
   schedule += 3600*24;
-  storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_timer, true);
+  storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_firstday, true);
   storage_persist();
   return;
 }
@@ -37,7 +37,7 @@ static void wakeup_handler(WakeupId id, int32_t r) {
   timing_handler_reason reason = (timing_handler_reason)r;
   if (reason == timing_handler_reason_snoozed) {
     storage.s_snooze_id = -1;
-  } else if (reason == timing_handler_reason_timer) {
+  } else if (reason == timing_handler_reason_timer || reason == timing_handler_reason_firstday) {
     reschedule_timer();
   }
 

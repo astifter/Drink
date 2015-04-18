@@ -20,3 +20,5 @@ extern DrinkData storage;
 
 void storage_init(void);
 void storage_persist(void);
+
+void storage_dobookkeeping(void);

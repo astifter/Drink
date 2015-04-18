@@ -28,3 +28,8 @@ void storage_init(void) {
 void storage_persist(void) {
   persist_write_data(STORAGE_ID, &storage, sizeof(DrinkData));  
 }
+
+void storage_dobookkeeping(void) {
+  storage.drank_glasses = 0;
+  storage_persist();
+}

@@ -4,6 +4,7 @@
   
 typedef enum {
   timing_handler_reason_startup,
+  timing_handler_reason_firstday,
   timing_handler_reason_timer,
   timing_handler_reason_snoozed,
 } timing_handler_reason;

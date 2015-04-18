@@ -4,6 +4,7 @@
 
 #include "data.h"
 #include "timing_handler.h"
+#include "watchface_base/logging_helper.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -69,6 +70,7 @@ static void destroy_ui(void) {
 static char drank_glasses_string[100];
 
 static void update_drank_glasses(void) {
+  LOG_FUNC();
   if (storage.drank_glasses == 0) {
     snprintf(drank_glasses_string, 99, "You drank\nnothing\ntoday!");
   } else if (storage.drank_glasses == 1) {
@@ -80,28 +82,40 @@ static void update_drank_glasses(void) {
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
+  LOG_FUNC();
   storage.drank_glasses++;
   storage_persist();
   update_drank_glasses();
 }
 
 static void snooze_click_handler(ClickRecognizerRef recognizer, void *context) {
+  LOG_FUNC();
   timing_handler_snooze();
 }
 
 static void config_provider(void *ctx) {
+  LOG_FUNC();
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, snooze_click_handler);
 }
 static void config_provider_nosnooze(void *ctx) {
+  LOG_FUNC();
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
 }
 
 static void handle_window_unload(Window* window) {
+  LOG_FUNC();
   destroy_ui();
 }
 
+static AppTimer* app_timer;
+static void timer_callback(void *data) {
+  LOG_FUNC();
+  hide_data_entry();
+}
+
 void show_data_entry(bool hide_snoozing) {
+  LOG_FUNC();
   initialise_ui();
   update_drank_glasses();
   if (hide_snoozing) {
@@ -115,8 +129,13 @@ void show_data_entry(bool hide_snoozing) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
+  if (storage.auto_dismiss)
+    app_timer = app_timer_register(5*60*1000, timer_callback, NULL);
 }
 
 void hide_data_entry(void) {
+  LOG_FUNC();
+  if (storage.auto_dismiss)
+    app_timer_cancel(app_timer);
   window_stack_remove(s_window, true);
 }

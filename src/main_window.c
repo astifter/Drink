@@ -32,21 +32,32 @@ static void destroy_ui(void) {
 
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
-#define NUM_SECOND_MENU_ITEMS 5
+#define NUM_SECOND_MENU_ITEMS 6
+
+void store_and_update_reminder(void) {
+  storage_persist();
+  if(storage.reminders_activated) {
+    timing_handler_cancel();
+    timing_handler_enable();
+  } else {
+    timing_handler_cancel();
+  }
+  layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
+}
 
 void first_reminder_selected(struct tm value) {
   storage.first_reminder = value;
-  layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
+  store_and_update_reminder();
 }
 
 void interval_selected(struct tm value) {
   storage.interval = value;
-  layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
+  store_and_update_reminder();
 }
 
 void target_number_selected(int value) {
   storage.target_number = value;
-  layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
+  store_and_update_reminder();
 }
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
@@ -126,6 +137,14 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
           }
           menu_cell_basic_draw(ctx, cell_layer, "Auto Dismiss", buffer, NULL);
         } break; 
+        case 5: {
+          if (storage.vibrate_on_reminder) {
+            snprintf(buffer, 10, "on");
+          } else {
+            snprintf(buffer, 10, "off");
+          }
+          menu_cell_basic_draw(ctx, cell_layer, "Vibrate", buffer, NULL);
+        } break; 
       }
       break;
   }
@@ -144,13 +163,7 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
       switch (cell_index->row) {
         case 0: {
           storage.reminders_activated = !storage.reminders_activated;
-          storage_persist();
-          if(storage.reminders_activated) {
-            timing_handler_enable();
-          } else {
-            timing_handler_cancel();
-          }
-          layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
+          store_and_update_reminder();
         } break;
         case 1: {
           show_time_selector(storage.first_reminder, first_reminder_selected);
@@ -163,7 +176,11 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
         } break;
         case 4: {
           storage.auto_dismiss = !storage.auto_dismiss;
-          layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
+          store_and_update_reminder();
+        } break;
+        case 5: {
+          storage.vibrate_on_reminder = !storage.vibrate_on_reminder;
+          store_and_update_reminder();
         } break;
       }
       break;

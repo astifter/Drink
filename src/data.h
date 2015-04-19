@@ -10,6 +10,7 @@ typedef struct {
   struct tm interval;
   unsigned int target_number;
   bool auto_dismiss;
+  bool vibrate_on_reminder;
 
   bool reminders_activated;
   bool s_wakeup_id_valid;

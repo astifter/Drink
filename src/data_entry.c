@@ -117,6 +117,14 @@ static void timer_callback(void *data) {
 
 void show_data_entry(bool hide_snoozing) {
   LOG_FUNC();
+  if (storage.vibrate_on_reminder) {
+    static const uint32_t const segments[] = { 200, 100, 400 };
+    VibePattern pat = {
+      .durations = segments,
+      .num_segments = ARRAY_LENGTH(segments),
+    };
+    vibes_enqueue_custom_pattern(pat);
+  }
   initialise_ui();
   update_drank_glasses();
   if (hide_snoozing) {

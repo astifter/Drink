@@ -9,33 +9,14 @@
     "resources": {
         "media": [
             {
-                "file": "images/snooze.png",
-                "name": "IMAGE_SNOOZE",
+                "file": "images/pebble-screenshot_2015-04-19_22-02-56.png",
+                "menuIcon": true,
+                "name": "IMAGE_SCREENSHOT",
                 "type": "png"
             },
             {
-                "file": "images/s.png",
-                "name": "IMAGE_SETTINGS",
-                "type": "png"
-            },
-            {
-                "file": "images/checkmark.png",
-                "name": "IMAGE_CHECKMARK",
-                "type": "png"
-            },
-            {
-                "file": "images/down.png",
-                "name": "IMAGE_DOWN",
-                "type": "png"
-            },
-            {
-                "file": "images/up.png",
-                "name": "IMAGE_UP",
-                "type": "png"
-            },
-            {
-                "file": "images/left.png",
-                "name": "IMAGE_LEFT",
+                "file": "images/left_right.png",
+                "name": "IMAGE_LEFT_RIGHT",
                 "type": "png"
             },
             {
@@ -44,8 +25,33 @@
                 "type": "png"
             },
             {
-                "file": "images/left_right.png",
-                "name": "IMAGE_LEFT_RIGHT",
+                "file": "images/left.png",
+                "name": "IMAGE_LEFT",
+                "type": "png"
+            },
+            {
+                "file": "images/up.png",
+                "name": "IMAGE_UP",
+                "type": "png"
+            },
+            {
+                "file": "images/down.png",
+                "name": "IMAGE_DOWN",
+                "type": "png"
+            },
+            {
+                "file": "images/checkmark.png",
+                "name": "IMAGE_CHECKMARK",
+                "type": "png"
+            },
+            {
+                "file": "images/s.png",
+                "name": "IMAGE_SETTINGS",
+                "type": "png"
+            },
+            {
+                "file": "images/snooze.png",
+                "name": "IMAGE_SNOOZE",
                 "type": "png"
             }
         ]

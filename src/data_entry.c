@@ -91,6 +91,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void snooze_click_handler(ClickRecognizerRef recognizer, void *context) {
   LOG_FUNC();
   timing_handler_snooze();
+  hide_data_entry();
 }
 
 static void config_provider(void *ctx) {

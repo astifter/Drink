@@ -71,13 +71,7 @@ static char drank_glasses_string[100];
 
 static void update_drank_glasses(void) {
   LOG_FUNC();
-  if (storage.drank_glasses == 0) {
-    snprintf(drank_glasses_string, 99, "You drank\nnothing\ntoday!");
-  } else if (storage.drank_glasses == 1) {
-    snprintf(drank_glasses_string, 99, "You drank\n1\nglass!");
-  } else if (storage.drank_glasses > 1) {
-    snprintf(drank_glasses_string, 99, "You drank\n%d\nglasses!", storage.drank_glasses);
-  }
+  storage_get_glasses_string(drank_glasses_string, true);
   text_layer_set_text(s_textlayer_1, drank_glasses_string);  
 }
 

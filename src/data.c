@@ -34,3 +34,24 @@ void storage_dobookkeeping(void) {
   storage.drank_glasses = 0;
   storage_persist();
 }
+
+int storage_get_glasses_string(char* str, bool add_linebreaks) {
+  if (add_linebreaks) {
+    if (storage.drank_glasses == 0) {
+      return snprintf(str, 50, "You drank\nnothing\ntoday!");
+    } else if (storage.drank_glasses == 1) {
+      return snprintf(str, 50, "You drank\n1\nglass!");
+    } else if (storage.drank_glasses > 1) {
+      return snprintf(str, 50, "You drank\n%d\nglasses!", storage.drank_glasses);
+    }
+  } else {
+    if (storage.drank_glasses == 0) {
+      return snprintf(str, 50, "You drank nothing.");
+    } else if (storage.drank_glasses == 1) {
+      return snprintf(str, 50, "You drank 1 glass.");
+    } else if (storage.drank_glasses > 1) {
+      return snprintf(str, 50, "You drank %d glasses.", storage.drank_glasses);
+    }
+  }
+  return 0;
+}

@@ -13,13 +13,9 @@ static char s_scroll_text[1024];
 
 static void settext(void) {
   char* buffer = s_scroll_text;
-  if (storage.drank_glasses == 0) {
-    buffer += snprintf(buffer, 50, "You drank nothing today.\n");   
-  } else if (storage.drank_glasses == 1) {
-    buffer += snprintf(buffer, 50, "You drank 1 glass today.\n");   
-  } else {
-    buffer += snprintf(buffer, 50, "You drank %d glasses today.\n", storage.drank_glasses);   
-  }
+
+  buffer += storage_get_glasses_string(buffer, false);
+  buffer += snprintf(buffer, 10, "\n");
     
   time_t next_timestamp;
   bool scheduled = timing_handler_next(&next_timestamp);

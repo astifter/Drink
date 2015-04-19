@@ -96,13 +96,7 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
     case 0:
       switch (cell_index->row) {
         case 0: {
-          if (storage.drank_glasses == 0) {
-            snprintf(buffer, 50, "You drank nothing.");
-          } else if (storage.drank_glasses == 1) {
-            snprintf(buffer, 50, "You drank 1 glass.");
-          } else if (storage.drank_glasses > 1) {
-            snprintf(buffer, 50, "You drank %d glasses.", storage.drank_glasses);
-          }
+          storage_get_glasses_string(buffer, false);
           menu_cell_basic_draw(ctx, cell_layer, "Statistics", buffer, NULL);
         } break;
       }

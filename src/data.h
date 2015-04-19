@@ -23,3 +23,4 @@ void storage_init(void);
 void storage_persist(void);
 
 void storage_dobookkeeping(void);
+int storage_get_glasses_string(char* str, bool add_linebreaks);

@@ -1,0 +1,8 @@
+title: CircaText
+email: circatext@googlegroups.com
+baseurl: "/CircaText/"
+url: "http://astifter.github.io"
+github_username:  astifter
+
+# build settings
+markdown: kramdown

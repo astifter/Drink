@@ -1,3 +1,5 @@
+#include <pebble.h>
+
 #include "logging_helper.h"
 
 void app_log_battery_state(BatteryChargeState s) {

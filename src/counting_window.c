@@ -1,6 +1,8 @@
 #include <pebble.h>
 
+#include "counting_window.h"
 #include "main_window.h"
+
 #include "data.h"
   
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY

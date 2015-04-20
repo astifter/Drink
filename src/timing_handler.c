@@ -1,8 +1,7 @@
 #include <pebble.h>
   
-#include "data.h"
 #include "timing_handler.h"
-
+#include "data.h"
 #include "watchface_base/logging_helper.h"
   
 timing_handler_callback callback;

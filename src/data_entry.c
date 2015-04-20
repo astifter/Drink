@@ -103,13 +103,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-static AppTimer* app_timer;
-static void timer_callback(void *data) {
-  LOG_FUNC();
-  hide_data_entry();
-}
-
-void show_data_entry(bool hide_snoozing) {
+void vibrate(void) {
   LOG_FUNC();
   if (storage.vibrate_on_reminder) {
     static const uint32_t const segments[] = { 200, 100, 400 };
@@ -119,6 +113,23 @@ void show_data_entry(bool hide_snoozing) {
     };
     vibes_enqueue_custom_pattern(pat);
   }
+}
+
+static AppTimer* dismiss_timer;
+static void dismiss_timer_callback(void *data) {
+  LOG_FUNC();
+  hide_data_entry();
+}
+static AppTimer* vibrate_timer;
+static void vibrate_timer_callback(void *data) {
+  LOG_FUNC();
+  vibrate();
+}
+
+void show_data_entry(bool hide_snoozing) {
+  LOG_FUNC();
+  vibrate();
+  vibrate_timer = app_timer_register(2*60*1000, vibrate_timer_callback, NULL);
   initialise_ui();
   update_drank_glasses();
   if (hide_snoozing) {
@@ -133,12 +144,13 @@ void show_data_entry(bool hide_snoozing) {
   });
   window_stack_push(s_window, true);
   if (storage.auto_dismiss)
-    app_timer = app_timer_register(5*60*1000, timer_callback, NULL);
+    dismiss_timer = app_timer_register(5*60*1000, dismiss_timer_callback, NULL);
 }
 
 void hide_data_entry(void) {
   LOG_FUNC();
+  app_timer_cancel(vibrate_timer);
   if (storage.auto_dismiss)
-    app_timer_cancel(app_timer);
+    app_timer_cancel(dismiss_timer);
   window_stack_remove(s_window, true);
 }

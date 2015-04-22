@@ -122,37 +122,37 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
       switch (cell_index->row) {
         case 0: {
           if (storage.reminders_activated) {
-            snprintf(buffer, 10, "enabled");
+            snprintf(buffer, 49, "enabled");
           } else {
-            snprintf(buffer, 10, "disabled");
+            snprintf(buffer, 49, "disabled");
           }
           menu_cell_basic_draw(ctx, cell_layer, "Reminder", buffer, NULL);
         } break;
         case 1: {
-          snprintf(buffer, 10, "%02d:%02d", storage.first_reminder.tm_hour, storage.first_reminder.tm_min);
+          snprintf(buffer, 49, "%02d:%02d", storage.first_reminder.tm_hour, storage.first_reminder.tm_min);
           menu_cell_basic_draw(ctx, cell_layer, "First Reminder", buffer, NULL);
         } break;
         case 2: {
-          snprintf(buffer, 10, "%02d:%02d", storage.interval.tm_hour, storage.interval.tm_min);
+          snprintf(buffer, 49, "%02d:%02d hours", storage.interval.tm_hour, storage.interval.tm_min);
           menu_cell_basic_draw(ctx, cell_layer, "Interval", buffer, NULL);
         } break;
         case 3: {
-          snprintf(buffer, 50, "%d glasses", storage.target_number);
+          snprintf(buffer, 49, "%d glasses", storage.target_number);
           menu_cell_basic_draw(ctx, cell_layer, "Target", buffer, NULL);
         } break;
         case 4: {
           if (storage.auto_dismiss) {
-            snprintf(buffer, 10, "on");
+            snprintf(buffer, 49, "on");
           } else {
-            snprintf(buffer, 10, "off");
+            snprintf(buffer, 49, "off");
           }
           menu_cell_basic_draw(ctx, cell_layer, "Auto Dismiss", buffer, NULL);
         } break; 
         case 5: {
           if (storage.vibrate_on_reminder) {
-            snprintf(buffer, 10, "on");
+            snprintf(buffer, 49, "on");
           } else {
-            snprintf(buffer, 10, "off");
+            snprintf(buffer, 49, "off");
           }
           menu_cell_basic_draw(ctx, cell_layer, "Vibrate", buffer, NULL);
         } break; 

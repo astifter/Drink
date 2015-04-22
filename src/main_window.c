@@ -16,13 +16,11 @@ static MenuLayer *s_menulayer_1;
 static void initialise_ui(void) {
   s_window = window_create();
   window_set_fullscreen(s_window, 0);
-  Layer* s_window_layer = window_get_root_layer(s_window);
-  GRect bounds = layer_get_bounds(s_window_layer);
   
   // s_menulayer_1
-  s_menulayer_1 = menu_layer_create(bounds);
+  s_menulayer_1 = menu_layer_create(GRect(0, 0, 144, 152));
   menu_layer_set_click_config_onto_window(s_menulayer_1, s_window);
-  layer_add_child(s_window_layer, (Layer *)s_menulayer_1);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_menulayer_1);
 }
 
 static void destroy_ui(void) {

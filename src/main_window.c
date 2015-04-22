@@ -31,7 +31,7 @@ static void destroy_ui(void) {
 
 #define NUM_MENU_SECTIONS       3
 #define NUM_FIRST_MENU_ITEMS    1
-#define NUM_SECOND_MENU_ITEMS   6
+#define NUM_SECOND_MENU_ITEMS   7
 #define NUM_THIRD_MENU_ITEMS    1
 
 void store_and_update_reminder(void) {
@@ -58,6 +58,12 @@ void interval_selected(struct tm value) {
 void target_number_selected(int value) {
   storage.target_number = value;
   store_and_update_reminder();
+}
+
+void number_glasses_corrected(int value) {
+  storage.drank_glasses = value;
+  storage_persist();
+  layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
 }
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
@@ -156,6 +162,9 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
           }
           menu_cell_basic_draw(ctx, cell_layer, "Vibrate", buffer, NULL);
         } break; 
+        case 6: {
+          menu_cell_basic_draw(ctx, cell_layer, "Manual Correction", "Change # of logged drinks.", NULL);
+        } break; 
       }
       break;
     case 2:
@@ -200,6 +209,9 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
         case 5: {
           storage.vibrate_on_reminder = !storage.vibrate_on_reminder;
           store_and_update_reminder();
+        } break;
+        case 6: {
+          show_int_selector(storage.drank_glasses, true, number_glasses_corrected);
         } break;
       }
       break;

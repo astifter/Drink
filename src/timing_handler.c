@@ -90,10 +90,9 @@ void timing_handler_snooze(void) {
   LOG_FUNC();
   if (storage.s_wakeup_id_valid) {
     int interval_seconds = ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
-    time_t scheduled_time;
-    wakeup_query(storage.s_wakeup_id, &scheduled_time);
-    scheduled_time -= (interval_seconds*2)/3;
-    storage.s_snooze_id = wakeup_schedule(scheduled_time, timing_handler_reason_snoozed, true);
+    time_t now; time(&now);
+    time_t schedule = now + interval_seconds/3;
+    storage.s_snooze_id = wakeup_schedule(schedule, timing_handler_reason_snoozed, true);
     storage_persist();
   }  
 }

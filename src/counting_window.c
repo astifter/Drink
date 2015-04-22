@@ -74,6 +74,7 @@ static void update_drank_glasses(void) {
   if (!storage.first_screen_shown) {
     snprintf(drank_glasses_string, 99, "Visit settings to\nenable continous\nreminders.");
     storage.first_screen_shown = true;
+    storage_persist();
   } else {
     storage_get_glasses_string(drank_glasses_string, true);
   }
@@ -82,6 +83,7 @@ static void update_drank_glasses(void) {
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   storage.drank_glasses++;
+  storage_persist();
   update_drank_glasses();
 }
 

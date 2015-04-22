@@ -50,7 +50,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(0, 60, 115, 28));
+  s_textlayer_3 = text_layer_create(GRect(0, 58, 115, 28));
   text_layer_set_background_color(s_textlayer_3, GColorClear);
   text_layer_set_text(s_textlayer_3, "Add a glass!");
   text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentRight);

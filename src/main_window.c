@@ -8,6 +8,7 @@
 #include "data.h"
 #include "timing_handler.h"
 
+static GBitmap *s_help_qr_code;
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static MenuLayer *s_menulayer_1;
@@ -30,9 +31,10 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
-#define NUM_MENU_SECTIONS 2
-#define NUM_FIRST_MENU_ITEMS 1
-#define NUM_SECOND_MENU_ITEMS 6
+#define NUM_MENU_SECTIONS       3
+#define NUM_FIRST_MENU_ITEMS    1
+#define NUM_SECOND_MENU_ITEMS   6
+#define NUM_THIRD_MENU_ITEMS    1
 
 void store_and_update_reminder(void) {
   storage_persist();
@@ -70,6 +72,8 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t secti
       return NUM_FIRST_MENU_ITEMS;
     case 1:
       return NUM_SECOND_MENU_ITEMS;
+    case 2:
+      return NUM_THIRD_MENU_ITEMS;
     default:
       return 0;
   }
@@ -79,6 +83,18 @@ static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t s
   return MENU_CELL_BASIC_HEADER_HEIGHT;
 }
 
+static int16_t menu_get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *callback_context) {
+  switch (cell_index->section) {
+    case 0:
+      return 40;
+    case 1:
+      return 40;
+    case 2:
+      return 144;
+  }
+  return 40;
+}
+
 static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, uint16_t section_index, void *data) {
   switch (section_index) {
     case 0:
@@ -86,6 +102,9 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
       break;
     case 1:
       menu_cell_basic_header_draw(ctx, cell_layer, "Settings");
+      break;
+    case 2:
+      menu_cell_basic_header_draw(ctx, cell_layer, "Help");
       break;
   }
 }
@@ -141,6 +160,14 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
         } break; 
       }
       break;
+    case 2:
+      switch (cell_index->row) {
+        case 0: {
+          GSize size = layer_get_frame(cell_layer).size;
+          graphics_draw_bitmap_in_rect(ctx, s_help_qr_code, GRect(0, 0, size.w, size.h));
+        } break;
+      }
+      break;
   }
 }
 
@@ -187,9 +214,11 @@ static void handle_window_unload(Window* window) {
 
 void show_main_window(void) {
   initialise_ui();
+  s_help_qr_code = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_QR_URL);
   menu_layer_set_callbacks(s_menulayer_1, NULL, (MenuLayerCallbacks){
     .get_num_sections = menu_get_num_sections_callback,
     .get_num_rows = menu_get_num_rows_callback,
+    .get_cell_height = menu_get_cell_height_callback,
     .get_header_height = menu_get_header_height_callback,
     .draw_header = menu_draw_header_callback,
     .draw_row = menu_draw_row_callback,

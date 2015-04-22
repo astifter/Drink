@@ -53,6 +53,11 @@
                 "file": "images/snooze.png",
                 "name": "IMAGE_SNOOZE",
                 "type": "png"
+            },
+            {
+                "file": "images/url_qr.png",
+                "name": "IMAGE_QR_URL",
+                "type": "png"
             }
         ]
     },

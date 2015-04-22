@@ -135,7 +135,13 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
           menu_cell_basic_draw(ctx, cell_layer, "Reminder", buffer, NULL);
         } break;
         case 1: {
-          snprintf(buffer, 49, "%02d:%02d", storage.first_reminder.tm_hour, storage.first_reminder.tm_min);
+          unsigned int first = storage.first_reminder.tm_hour*60 + storage.first_reminder.tm_min;
+          unsigned int last = first + ((storage.target_number-1) * ((storage.interval.tm_hour * 60) + storage.interval.tm_min));
+          unsigned int last_min = last % 60; last /= 60;
+          unsigned int last_hour = last;
+          snprintf(buffer, 49, "%02d:%02d (runs till %02d:%02d)", 
+            storage.first_reminder.tm_hour, storage.first_reminder.tm_min,
+            last_hour, last_min);
           menu_cell_basic_draw(ctx, cell_layer, "First Reminder", buffer, NULL);
         } break;
         case 2: {

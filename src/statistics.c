@@ -35,7 +35,14 @@ static void settext(void) {
   } else {
     buffer += snprintf(buffer, 50, "There is no timer scheduled.");
   }
-
+  {
+    time_t bookkeeping_timestamp;
+    wakeup_query(storage.s_bookkeeping_id, &bookkeeping_timestamp);
+    struct tm *next = localtime(&bookkeeping_timestamp);
+    buffer += snprintf(buffer, 50, "Bookkeeping scheduled for:\n%04d-%02d-%02d %02d:%02d\n", 
+                       next->tm_year+1900, next->tm_mon+1, next->tm_mday,
+                       next->tm_hour, next->tm_min);
+    }
   text_layer_set_text(s_text_layer, s_scroll_text);
 }
 

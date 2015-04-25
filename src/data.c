@@ -26,6 +26,7 @@ void storage_init(void) {
     storage.s_snooze_id = -1;
     storage.auto_dismiss = false;
     storage.vibrate_on_reminder = true;
+    storage.s_bookkeeping_id = -1;
     storage_persist();
   }
 }

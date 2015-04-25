@@ -16,6 +16,8 @@ typedef struct {
   bool s_wakeup_id_valid;
   WakeupId s_wakeup_id;
   WakeupId s_snooze_id;
+
+  WakeupId s_bookkeeping_id;
 } DrinkData;
 extern DrinkData storage;
 

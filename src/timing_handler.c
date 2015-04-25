@@ -35,6 +35,26 @@ static void reschedule_timer(void) {
   return;
 }
 
+static void reschedule_bookkeeping(void) {
+  LOG_FUNC();
+  time_t now; time(&now);
+  struct tm *lt = localtime(&now);
+
+  lt->tm_hour = 0;
+  lt->tm_min  = 0;
+
+  time_t schedule = mktime(lt);
+  schedule += 3600*24;
+  if (storage.s_bookkeeping_id != -1) {
+    storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
+  } else {
+    wakeup_cancel(storage.s_bookkeeping_id);
+    storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
+  }
+  storage_persist();
+  return;
+}
+
 static void wakeup_handler(WakeupId id, int32_t r) {
   LOG_FUNC();
   timing_handler_reason reason = (timing_handler_reason)r;
@@ -74,8 +94,10 @@ static void timing_handler_handle(bool enable) {
     storage.s_wakeup_id_valid = true;
     storage_persist();
   } else if (storage.s_wakeup_id_valid && !enable) {
-    wakeup_cancel_all();
+    wakeup_cancel(storage.s_wakeup_id);
+    wakeup_cancel(storage.s_snooze_id);
     storage.s_wakeup_id = -1;
+    storage.s_snooze_id = -1;
     storage.s_wakeup_id_valid = false;
     storage_persist();
   }
@@ -121,4 +143,6 @@ void timing_handler_init(timing_handler_callback c) {
   } else {
     wakeup_handler(0, timing_handler_reason_startup);
   }
+  
+  reschedule_bookkeeping();
 }

@@ -7,6 +7,7 @@ typedef enum {
   timing_handler_reason_firstday,
   timing_handler_reason_timer,
   timing_handler_reason_snoozed,
+  timing_handler_reason_bookkeeping,
 } timing_handler_reason;
 
 typedef void(*timing_handler_callback)(timing_handler_reason reason);

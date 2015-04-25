@@ -6,6 +6,17 @@
   
 timing_handler_callback callback;
 
+static void check_wakeup_return_code(int32_t id) {
+  if (id < 0) {
+    switch(id) {
+      case E_RANGE: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_RANGE, returned %ld", (id)); break;
+      case E_INVALID_ARGUMENT: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_INVALID_ARGUMENT, returned %ld", (id)); break;
+      case E_OUT_OF_RESOURCES: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_OUT_OF_RESOURCES, returned %ld", (id)); break;
+      case E_INTERNAL: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_INTERNAL, returned %ld", (id)); break;
+    }
+  }
+}
+
 static void reschedule_timer(void) {
   LOG_FUNC();
   time_t now; time(&now);
@@ -45,14 +56,10 @@ static void reschedule_bookkeeping(void) {
 
   time_t schedule = mktime(lt);
   schedule += 3600*24;
-  if (storage.s_bookkeeping_id != -1) {
-    storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
-  } else {
-    wakeup_cancel(storage.s_bookkeeping_id);
-    storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
-  }
+  wakeup_cancel(storage.s_bookkeeping_id);
+  storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
+  check_wakeup_return_code(storage.s_bookkeeping_id);
   storage_persist();
-  return;
 }
 
 static void wakeup_handler(WakeupId id, int32_t r) {
@@ -63,6 +70,8 @@ static void wakeup_handler(WakeupId id, int32_t r) {
     storage_persist();
   } else if (reason == timing_handler_reason_timer || reason == timing_handler_reason_firstday) {
     reschedule_timer();
+  } else if (reason == timing_handler_reason_bookkeeping) {
+    reschedule_bookkeeping();
   }
 
   callback((timing_handler_reason)reason);

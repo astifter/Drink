@@ -23,9 +23,11 @@ void storage_init(void) {
     storage.drank_glasses = 0;
     storage.s_wakeup_id_valid = false;
     storage.s_wakeup_id = -1;
+    storage.s_snooze_id_valid = false;
     storage.s_snooze_id = -1;
     storage.auto_dismiss = false;
     storage.vibrate_on_reminder = true;
+    storage.s_bookkeeping_id_valid = false;
     storage.s_bookkeeping_id = -1;
     storage_persist();
   }

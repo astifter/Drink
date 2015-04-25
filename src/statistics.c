@@ -33,7 +33,7 @@ static void settext(void) {
                                      next->tm_hour, next->tm_min);
     }
   } else {
-    buffer += snprintf(buffer, 50, "There is no timer scheduled.");
+    buffer += snprintf(buffer, 50, "There is no timer scheduled.\n");
   }
   {
     time_t bookkeeping_timestamp;
@@ -42,7 +42,8 @@ static void settext(void) {
     buffer += snprintf(buffer, 50, "Bookkeeping scheduled for:\n%04d-%02d-%02d %02d:%02d\n", 
                        next->tm_year+1900, next->tm_mon+1, next->tm_mday,
                        next->tm_hour, next->tm_min);
-    }
+    buffer += snprintf(buffer, 50, "(Bookkeeping ID: %lu)\n", storage.s_bookkeeping_id);
+  }
   text_layer_set_text(s_text_layer, s_scroll_text);
 }
 

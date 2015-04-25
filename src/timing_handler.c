@@ -17,7 +17,11 @@ static void reschedule_timer(void) {
   time_t schedule = mktime(lt);
   for (unsigned int i = 0; i < storage.target_number; i++) {
     if (schedule > now) {
-      storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_timer, true);
+      if (i == 0) {
+        storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_firstday, true);
+      } else {
+        storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_timer, true);
+      }
       storage_persist();
       return;
     }

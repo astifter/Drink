@@ -6,17 +6,6 @@
   
 timing_handler_callback callback;
 
-static void check_wakeup_return_code(int32_t id) {
-  if (id < 0) {
-    switch(id) {
-      case E_RANGE: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_RANGE, returned %ld", (id)); break;
-      case E_INVALID_ARGUMENT: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_INVALID_ARGUMENT, returned %ld", (id)); break;
-      case E_OUT_OF_RESOURCES: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_OUT_OF_RESOURCES, returned %ld", (id)); break;
-      case E_INTERNAL: LOG_EXT(LOG_ALL, "wakeup_schedule failed E_INTERNAL, returned %ld", (id)); break;
-    }
-  }
-}
-
 static void reschedule_timer(void) {
   LOG_FUNC();
   time_t now; time(&now);
@@ -43,11 +32,13 @@ static void reschedule_timer(void) {
   schedule += 3600*24;
   storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_firstday, true);
   storage_persist();
-  return;
 }
 
 static void reschedule_bookkeeping(void) {
   LOG_FUNC();
+  if (wakeup_query(storage.s_bookkeeping_id, NULL))
+    return;
+
   time_t now; time(&now);
   struct tm *lt = localtime(&now);
 
@@ -56,17 +47,15 @@ static void reschedule_bookkeeping(void) {
 
   time_t schedule = mktime(lt);
   schedule += 3600*24;
-  wakeup_cancel(storage.s_bookkeeping_id);
   storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
-  check_wakeup_return_code(storage.s_bookkeeping_id);
   storage_persist();
 }
 
-static void wakeup_handler(WakeupId id, int32_t r) {
+static void wakeup_handler(WakeupId id, int32_t reason) {
   LOG_FUNC();
-  timing_handler_reason reason = (timing_handler_reason)r;
   if (reason == timing_handler_reason_snoozed) {
-    storage.s_snooze_id = -1;
+    wakeup_cancel(storage.s_snooze_id);
+    storage.s_snooze_id = E_UNKNOWN;
     storage_persist();
   } else if (reason == timing_handler_reason_timer || reason == timing_handler_reason_firstday) {
     reschedule_timer();
@@ -77,37 +66,16 @@ static void wakeup_handler(WakeupId id, int32_t r) {
   callback((timing_handler_reason)reason);
 }
 
-bool timing_handler_next(time_t *timestamp) {
-  LOG_FUNC();
-  if (storage.s_wakeup_id_valid) {
-    return wakeup_query(storage.s_wakeup_id, timestamp);
-  } else {
-    return false;
-  }
-}
-
-bool timing_handler_next_snooze(time_t *timestamp) {
-  LOG_FUNC();
-  if (storage.s_wakeup_id_valid) {
-    return wakeup_query(storage.s_snooze_id, timestamp);
-  } else {
-    return false;
-  }
-}
-
 static void timing_handler_handle(bool enable) {
   LOG_FUNC();
   
-  if (!storage.s_wakeup_id_valid && enable) {
+  if (storage.s_wakeup_id == E_UNKNOWN && enable) {
     reschedule_timer();
-    storage.s_wakeup_id_valid = true;
-    storage_persist();
-  } else if (storage.s_wakeup_id_valid && !enable) {
+  } else if (storage.s_wakeup_id >= 0 && !enable) {
     wakeup_cancel(storage.s_wakeup_id);
     wakeup_cancel(storage.s_snooze_id);
-    storage.s_wakeup_id = -1;
-    storage.s_snooze_id = -1;
-    storage.s_wakeup_id_valid = false;
+    storage.s_wakeup_id = E_UNKNOWN;
+    storage.s_snooze_id = E_UNKNOWN;
     storage_persist();
   }
 }
@@ -123,13 +91,13 @@ void timing_handler_cancel(void) {
 
 void timing_handler_snooze(void) {
   LOG_FUNC();
-  if (storage.s_wakeup_id_valid) {
-    int interval_seconds = ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
-    time_t now; time(&now);
-    time_t schedule = now + interval_seconds/3;
-    storage.s_snooze_id = wakeup_schedule(schedule, timing_handler_reason_snoozed, true);
-    storage_persist();
-  }  
+
+  time_t now; time(&now);
+  int interval_seconds = ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
+  time_t schedule = now + interval_seconds/3;
+
+  storage.s_snooze_id = wakeup_schedule(schedule, timing_handler_reason_snoozed, true);
+  storage_persist();
 }
 
 void timing_handler_init(timing_handler_callback c) {

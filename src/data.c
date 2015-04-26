@@ -11,6 +11,10 @@ void storage_init(void) {
   if (persist_exists(STORAGE_ID)) {
     persist_read_data(STORAGE_ID, &storage, sizeof(DrinkData));
   } else {
+    // since we don't now anything about possibly scheduled timers
+    // we cancel them all just in case.
+    wakeup_cancel_all();
+
     //time_t now_time_t = time(NULL) + 60;
     //struct tm *now = localtime(&now_time_t);
     storage.first_reminder.tm_hour = 9;
@@ -21,14 +25,11 @@ void storage_init(void) {
     storage.reminders_activated = false;
     storage.first_screen_shown = false;
     storage.drank_glasses = 0;
-    storage.s_wakeup_id_valid = false;
-    storage.s_wakeup_id = -1;
-    storage.s_snooze_id_valid = false;
-    storage.s_snooze_id = -1;
+    storage.s_wakeup_id = E_UNKNOWN;
+    storage.s_snooze_id = E_UNKNOWN;
+    storage.s_bookkeeping_id = E_UNKNOWN;
     storage.auto_dismiss = false;
     storage.vibrate_on_reminder = true;
-    storage.s_bookkeeping_id_valid = false;
-    storage.s_bookkeeping_id = -1;
     storage_persist();
   }
 }

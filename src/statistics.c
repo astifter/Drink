@@ -4,6 +4,7 @@
 
 #include "data.h"
 #include "timing_handler.h"
+#include "watchface_base/logging_helper.h"
 
 static Window *s_window;
 static TextLayer *s_text_layer;
@@ -11,39 +12,37 @@ static ScrollLayer *s_scroll_layer;
 
 static char s_scroll_text[1024];
 
+static int print_timer_info(char* buffer, char* name, WakeupId id) {
+  time_t next_timestamp;
+  if (id == E_UNKNOWN) {
+    return snprintf(buffer, 50, "%s not scheduled. (%s)\n", name, logging_error_to_text(id));
+  } else {
+    if (id < 0) {
+      return snprintf(buffer, 50, "%s has error. (%s)\n", name, logging_error_to_text(id));
+    } else {
+      bool scheduled = wakeup_query(id, &next_timestamp);
+      struct tm *next = localtime(&next_timestamp);
+      if (scheduled) {
+        return snprintf(buffer, 50, "%s scheduled for:\n%04d-%02d-%02d %02d:%02d\n", name,
+                                       next->tm_year+1900, next->tm_mon+1, next->tm_mday,
+                                       next->tm_hour, next->tm_min);
+      } else {
+        return snprintf(buffer, 50, "%s not scheduled.\n", name);
+      }
+    }
+  }
+}
+
 static void settext(void) {
   char* buffer = s_scroll_text;
 
   buffer += storage_get_glasses_string(buffer, false);
   buffer += snprintf(buffer, 10, "\n");
-    
-  time_t next_timestamp;
-  bool scheduled = timing_handler_next(&next_timestamp);
-  if (scheduled) {
-    struct tm *next = localtime(&next_timestamp);
-    buffer += snprintf(buffer, 50, "Timer scheduled for:\n%04d-%02d-%02d %02d:%02d\n", 
-                                   next->tm_year+1900, next->tm_mon+1, next->tm_mday,
-                                   next->tm_hour, next->tm_min);
 
-    bool snoozed = timing_handler_next_snooze(&next_timestamp);
-    if (snoozed) {
-      next = localtime(&next_timestamp);
-      buffer += snprintf(buffer, 50, "Snooze scheduled for:\n%04d-%02d-%02d %02d:%02d\n", 
-                                     next->tm_year+1900, next->tm_mon+1, next->tm_mday,
-                                     next->tm_hour, next->tm_min);
-    }
-  } else {
-    buffer += snprintf(buffer, 50, "There is no timer scheduled.\n");
-  }
-  {
-    time_t bookkeeping_timestamp;
-    wakeup_query(storage.s_bookkeeping_id, &bookkeeping_timestamp);
-    struct tm *next = localtime(&bookkeeping_timestamp);
-    buffer += snprintf(buffer, 50, "Bookkeeping scheduled for:\n%04d-%02d-%02d %02d:%02d\n", 
-                       next->tm_year+1900, next->tm_mon+1, next->tm_mday,
-                       next->tm_hour, next->tm_min);
-    buffer += snprintf(buffer, 50, "(Bookkeeping ID: %lu)\n", storage.s_bookkeeping_id);
-  }
+  buffer += print_timer_info(buffer, "Reminder", storage.s_wakeup_id);
+  buffer += print_timer_info(buffer, "Snooze", storage.s_snooze_id);
+  buffer += print_timer_info(buffer, "Bookkeeping", storage.s_bookkeeping_id);
+
   text_layer_set_text(s_text_layer, s_scroll_text);
 }
 

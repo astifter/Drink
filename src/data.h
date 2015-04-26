@@ -14,13 +14,8 @@ typedef struct {
 
   bool reminders_activated;
 
-  bool s_wakeup_id_valid;
   WakeupId s_wakeup_id;
- 
-  bool s_snooze_id_valid;
   WakeupId s_snooze_id;
-
-  bool s_bookkeeping_id_valid;
   WakeupId s_bookkeeping_id;
 } DrinkData;
 extern DrinkData storage;

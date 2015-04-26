@@ -33,3 +33,5 @@
         app_log(APP_LOG_LEVEL_DEBUG, __FILE__, __LINE__, "%s() exiting", __PRETTY_FUNCTION__); \
     }
 #endif
+
+char* logging_error_to_text(int error);

@@ -15,7 +15,10 @@ static void reschedule_timer(void) {
   lt->tm_min  = storage.first_reminder.tm_min;
 
   time_t schedule = mktime(lt);
-  for (unsigned int i = 0; i < storage.target_number; i++) {
+  for (int i = 0; i < storage.drank_glasses; i++) {
+    schedule += ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
+  }
+  for (unsigned int i = storage.drank_glasses; i < storage.target_number; i++) {
     if (schedule > now) {
       if (i == 0) {
         storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_firstday, true);

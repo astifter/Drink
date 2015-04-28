@@ -62,7 +62,7 @@ void target_number_selected(int value) {
 
 void number_glasses_corrected(int value) {
   storage.drank_glasses = value;
-  storage_persist();
+  store_and_update_reminder();
   layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
 }
 

@@ -8,6 +8,7 @@
 #include "data.h"
 #include "timing_handler.h"
 
+static glasses_changed_callback callback;
 static GBitmap *s_help_qr_code;
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -64,6 +65,7 @@ void number_glasses_corrected(int value) {
   storage.drank_glasses = value;
   store_and_update_reminder();
   layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
+  callback();
 }
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
@@ -228,8 +230,9 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-void show_main_window(void) {
+void show_main_window(glasses_changed_callback c) {
   initialise_ui();
+  callback = c;
   s_help_qr_code = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_QR_URL);
   menu_layer_set_callbacks(s_menulayer_1, NULL, (MenuLayerCallbacks){
     .get_num_sections = menu_get_num_sections_callback,

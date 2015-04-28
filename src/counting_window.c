@@ -88,7 +88,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  show_main_window();
+  show_main_window(update_drank_glasses);
   update_drank_glasses();
 }
 

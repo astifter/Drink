@@ -15,13 +15,91 @@ layout: default
       <div class="inner">
 
         <header>
-          <h2>Drink! - Stay hydrated.
+          <h2>Drink! - Stay hydrated.</h2>
         </header>
 
         <section id="main_content">
-<p>Pebble App Store: <a href="https://apps.getpebble.com/applications/553ea4d8602d4220260000d7">https://apps.getpebble.com/applications/553ea4d8602d4220260000d7</a></p>
+          <p>Pebble App Store: <a href="https://apps.getpebble.com/applications/553ea4d8602d4220260000d7">https://apps.getpebble.com/applications/553ea4d8602d4220260000d7</a></p>
+          
+          <p>Trouble? <a href="https://github.com/astifter/Drink/issues">https://github.com/astifter/Drink/issues</a></p>
+        </section>
 
-<p>Probleme? <a href="https://github.com/astifter/Drink/issues">https://github.com/astifter/Drink/issues</a></p>
+        <section>
+          <h2>Documentation</h2>
+          <h3>Simple Use Case</h3>
+          <p>
+            <div class="columns columns-col-1">
+              <img src="resources/pebble-screenshot_2015-04-28_22-47-56.png"/>
+            </div>
+            <div class="columns columns-col-2">
+              In the simplest use case the app can log the number of glasses of
+              fluid you drank in a day.
+            </div>
+          </p>
+          <h3>Enabling Reminders</h3>
+          <p>
+            <div class="columns columns-col-1">
+              <img src="resources/pebble-screenshot_2015-04-28_22-48-03.png"/>
+            </div>
+            <div class="columns columns-col-2">
+              The real power comes from the automatic reminders. To enable them
+              go to the Settings menu and select the <em>Settings /
+              Reminder</em> to enable them. The default settings should be
+              really okay.
+            </div>
+          </p>
+          <h3>Reminders Explained</h3>
+          <p>
+            <div class="columns columns-col-1">
+              <img src="resources/pebble-screenshot_2015-04-28_22-48-12.png"/>
+            </div>
+            <div class="columns columns-col-2">
+              <p>
+                The reminders start at the time set in <em>First Reminder</em>
+                and then continue each <em>Interval</em>, the number of
+                reminders matches the number of glasses in <em>Target</em>.  To
+                space out the reminders evenly the already logged number of
+                glasses is taken into account. 
+              </p><p>
+                Example: With a <em>First Time</em> of 9:00, <em>Interval</em>
+                of 1:30 and <em>Target</em> of 6 glasses the reminders come at
+                9:00, 10:30, 12:00, 13:30, 15:00 and 16:30. If you log 4
+                glasses at 10:00 the next reminder will be at 15:00 (for the
+                5th glass).
+              </p>
+            </div>
+          </p>
+          <h3>Using the Reminder Window</h3>
+          <p>
+            <div class="columns columns-col-1">
+              <img src="resources/pebble-screenshot_2015-04-28_22-55-46.png"/>
+            </div>
+            <div class="columns columns-col-2">
+              <p>
+                When the reminder opens its possible to increase the amount of
+                logged glasses and to snooze the reminder. The snooze time
+                depends on the <em>Interval</em>, its 1/3 of this duration. The
+                reminder window that opens after snoozing does not allow you to
+                snooze again, just to be sure.
+              </p><p>
+                Example: The 13:30 reminder goes of an is snoozed, the next
+                reminders are scheduled for 14:00 (the snoozed 13:30 one) and
+                for 15:00 (the regular one). When the reminder at 14:00 opens
+                its not possible to snooze again.
+              </p>
+            </div>
+          </p>
+          <h3>Additional Settings</h3>
+          <p>
+            <div class="columns columns-col-1"><img src="resources/pebble-screenshot_2015-04-28_22-48-17.png"/></div>
+            <div class="columns columns-col-2">
+              Enabled <em>Auto Dismiss</em> closes the reminder window after 5
+              minutes.<br> 
+              Enabled <em>Vibrate</em> enables vibration for the reminders.<br>
+              <em>Manual Correction</em> can be used in case a wrong amout of
+              glasses was logged.
+            </div>
+          </p>
         </section>
         
       </div>

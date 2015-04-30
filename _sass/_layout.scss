@@ -235,3 +235,19 @@
         }
     }
 }
+
+
+/** 
+ * Columns
+ */
+.columns {
+    vertical-align: top;
+    display: inline-block;
+}
+.columns-col-1 {
+    width: 30%;
+}
+.columns-col-2 {
+    width: 69%;
+}
+

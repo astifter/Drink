@@ -23,6 +23,15 @@ static void initialise_ui(void) {
   s_res_image_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP);
   s_res_image_left_right = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LEFT_RIGHT);
   s_res_image_down = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DOWN);
+  
+  // s_layer_1
+  s_layer_1 = layer_create(GRect(9, 56, 46, 40));
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_layer_1);
+  
+  // s_layer_2
+  s_layer_2 = layer_create(GRect(65, 56, 46, 40));
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_layer_2);
+
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(4, 55, 54, 42));
   text_layer_set_background_color(s_textlayer_1, GColorClear);
@@ -46,14 +55,6 @@ static void initialise_ui(void) {
   text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_3, s_res_bitham_34_medium_numbers);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
-  
-  // s_layer_1
-  s_layer_1 = layer_create(GRect(9, 56, 46, 40));
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_layer_1);
-  
-  // s_layer_2
-  s_layer_2 = layer_create(GRect(65, 56, 46, 40));
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_layer_2);
   
   // s_actionbarlayer_1
   s_actionbarlayer_1 = action_bar_layer_create();
@@ -132,6 +133,8 @@ static void selector_visibilty(void) {
     text_layer_set_text_color(s_textlayer_1, GColorBlack);
     text_layer_set_text_color(s_textlayer_2, GColorWhite);
   }
+  layer_mark_dirty(text_layer_get_layer(s_textlayer_1));
+  layer_mark_dirty(text_layer_get_layer(s_textlayer_2));
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {

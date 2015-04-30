@@ -82,6 +82,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   storage.drank_glasses++;
   storage_persist();
   update_drank_glasses();
+  timing_handler_reschedule();
 }
 
 static void snooze_click_handler(ClickRecognizerRef recognizer, void *context) {

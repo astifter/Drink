@@ -6,7 +6,7 @@
   
 timing_handler_callback callback;
 
-static void reschedule_timer(void) {
+static void reschedule(void) {
   LOG_FUNC();
   if (wakeup_query(storage.s_wakeup_id, NULL)) {
     wakeup_cancel(storage.s_wakeup_id);
@@ -66,7 +66,7 @@ static void wakeup_handler(WakeupId id, int32_t reason) {
     storage.s_snooze_id = E_UNKNOWN;
     storage_persist();
   } else if (reason == timing_handler_reason_timer || reason == timing_handler_reason_firstday) {
-    reschedule_timer();
+    reschedule();
   } else if (reason == timing_handler_reason_bookkeeping) {
     reschedule_bookkeeping();
   }
@@ -78,7 +78,7 @@ static void timing_handler_handle(bool enable) {
   LOG_FUNC();
   
   if (storage.s_wakeup_id == E_UNKNOWN && enable) {
-    reschedule_timer();
+    reschedule();
   } else if (storage.s_wakeup_id >= 0 && !enable) {
     wakeup_cancel(storage.s_wakeup_id);
     wakeup_cancel(storage.s_snooze_id);
@@ -110,6 +110,12 @@ void timing_handler_snooze(void) {
 
   storage.s_snooze_id = wakeup_schedule(schedule, timing_handler_reason_snoozed, true);
   storage_persist();
+}
+
+void timing_handler_reschedule(void) {
+  if (storage.s_wakeup_id == E_UNKNOWN) 
+    return;
+  reschedule();
 }
 
 void timing_handler_init(timing_handler_callback c) {

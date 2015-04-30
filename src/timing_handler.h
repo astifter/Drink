@@ -18,3 +18,4 @@ void timing_handler_snooze(void);
 void timing_handler_cancel(void);
 bool timing_handler_next(time_t *timestamp);  
 bool timing_handler_next_snooze(time_t *timestamp);  
+void timing_handler_reschedule(void);

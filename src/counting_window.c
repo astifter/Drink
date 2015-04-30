@@ -4,6 +4,7 @@
 #include "main_window.h"
 
 #include "data.h"
+#include "timing_handler.h"
   
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -85,6 +86,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   storage.drank_glasses++;
   storage_persist();
   update_drank_glasses();
+  timing_handler_reschedule();
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {

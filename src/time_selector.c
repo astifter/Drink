@@ -11,8 +11,8 @@ static GBitmap *s_res_image_down;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 static TextLayer *s_textlayer_3;
-static InverterLayer *s_inverterlayer_1;
-static InverterLayer *s_inverterlayer_2;
+static Layer *s_layer_1;
+static Layer *s_layer_2;
 static ActionBarLayer *s_actionbarlayer_1;
 
 static void initialise_ui(void) {
@@ -47,13 +47,13 @@ static void initialise_ui(void) {
   text_layer_set_font(s_textlayer_3, s_res_bitham_34_medium_numbers);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
   
-  // s_inverterlayer_1
-  s_inverterlayer_1 = inverter_layer_create(GRect(9, 56, 46, 40));
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverterlayer_1);
+  // s_layer_1
+  s_layer_1 = layer_create(GRect(9, 56, 46, 40));
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_layer_1);
   
-  // s_inverterlayer_2
-  s_inverterlayer_2 = inverter_layer_create(GRect(65, 56, 46, 40));
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverterlayer_2);
+  // s_layer_2
+  s_layer_2 = layer_create(GRect(65, 56, 46, 40));
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_layer_2);
   
   // s_actionbarlayer_1
   s_actionbarlayer_1 = action_bar_layer_create();
@@ -70,14 +70,22 @@ static void destroy_ui(void) {
   text_layer_destroy(s_textlayer_1);
   text_layer_destroy(s_textlayer_2);
   text_layer_destroy(s_textlayer_3);
-  inverter_layer_destroy(s_inverterlayer_1);
-  inverter_layer_destroy(s_inverterlayer_2);
+  layer_destroy(s_layer_1);
+  layer_destroy(s_layer_2);
   action_bar_layer_destroy(s_actionbarlayer_1);
   gbitmap_destroy(s_res_image_up);
   gbitmap_destroy(s_res_image_left_right);
   gbitmap_destroy(s_res_image_down);
 }
 // END AUTO-GENERATED UI CODE
+
+static void s_layer_1_draw(Layer *layer, GContext *ctx) {
+  GRect bounds = layer_get_bounds(layer);
+
+  // Draw a black filled rectangle with sharp corners
+  graphics_context_set_fill_color(ctx, GColorBlack);
+  graphics_fill_rect(ctx, bounds, 4, GCornersAll);
+}
 
 static struct tm selected_time;
 static int selected_time_index;
@@ -112,16 +120,27 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   update_selected_time_string();
 }
 
+static void selector_visibilty(void) {
+  if (selected_time_index == 1) {
+    layer_set_hidden(s_layer_1, false);
+    layer_set_hidden(s_layer_2, true);
+    text_layer_set_text_color(s_textlayer_1, GColorWhite);
+    text_layer_set_text_color(s_textlayer_2, GColorBlack);
+  } else if (selected_time_index == 2) {
+    layer_set_hidden(s_layer_1, true);
+    layer_set_hidden(s_layer_2, false);
+    text_layer_set_text_color(s_textlayer_1, GColorBlack);
+    text_layer_set_text_color(s_textlayer_2, GColorWhite);
+  }
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   if (selected_time_index == 1) {
     selected_time_index = 2;
-    layer_set_hidden(inverter_layer_get_layer(s_inverterlayer_1), true);
-    layer_set_hidden(inverter_layer_get_layer(s_inverterlayer_2), false);
   } else if (selected_time_index == 2) {
     selected_time_index = 1;
-    layer_set_hidden(inverter_layer_get_layer(s_inverterlayer_1), false);
-    layer_set_hidden(inverter_layer_get_layer(s_inverterlayer_2), true);
   }
+  selector_visibilty();
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -149,7 +168,9 @@ void show_time_selector(struct tm initial, TimeSelected c) {
   selected_time_index = 1;
   initialise_ui();
   action_bar_layer_set_click_config_provider(s_actionbarlayer_1, config_provider);
-  layer_set_hidden(inverter_layer_get_layer(s_inverterlayer_2), true);
+  layer_set_update_proc(s_layer_1, s_layer_1_draw);
+  layer_set_update_proc(s_layer_2, s_layer_1_draw);
+  selector_visibilty();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });

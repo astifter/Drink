@@ -251,3 +251,15 @@
     width: 69%;
 }
 
+@include media-query($on-palm) {
+    .columns {
+        vertical-align: top;
+        display: inline-block;
+    }
+    .columns-col-1 {
+        width: 100%;
+    }
+    .columns-col-2 {
+        width: 100%;
+    }
+}

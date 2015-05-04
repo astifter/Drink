@@ -8,10 +8,10 @@ timing_handler_callback callback;
 
 static void reschedule(void) {
   LOG_FUNC();
-  if (wakeup_query(storage.s_wakeup_id, NULL)) {
-    wakeup_cancel(storage.s_wakeup_id);
-    storage.s_wakeup_id = E_UNKNOWN;
-  }
+
+  wakeup_cancel(storage.s_wakeup_id);
+  storage.s_wakeup_id = E_UNKNOWN;
+  storage_persist();
     
   time_t now; time(&now);
   struct tm *lt = localtime(&now);
@@ -44,8 +44,10 @@ static void reschedule(void) {
 
 static void reschedule_bookkeeping(void) {
   LOG_FUNC();
-  if (wakeup_query(storage.s_bookkeeping_id, NULL))
-    return;
+
+  wakeup_cancel(storage.s_bookkeeping_id);
+  storage.s_bookkeeping_id = E_UNKNOWN;
+  storage_persist();
 
   time_t now; time(&now);
   struct tm *lt = localtime(&now);
@@ -99,10 +101,10 @@ void timing_handler_cancel(void) {
 
 void timing_handler_snooze(void) {
   LOG_FUNC();
-  if (wakeup_query(storage.s_snooze_id, NULL)) {
-    wakeup_cancel(storage.s_snooze_id);
-    storage.s_snooze_id = E_UNKNOWN;
-  }
+  
+  wakeup_cancel(storage.s_snooze_id);
+  storage.s_snooze_id = E_UNKNOWN;
+  storage_persist();
 
   time_t now; time(&now);
   int interval_seconds = ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;

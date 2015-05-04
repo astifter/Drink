@@ -48,7 +48,7 @@ static void settext(void) {
 
 static void initialise_ui(void) {
   s_window = window_create();
-  window_set_fullscreen(s_window, 0);
+
   Layer* s_window_layer = window_get_root_layer(s_window);
   GRect bounds = layer_get_bounds(s_window_layer);
   

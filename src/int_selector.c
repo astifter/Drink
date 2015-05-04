@@ -12,7 +12,6 @@ static ActionBarLayer *s_actionbarlayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
-  window_set_fullscreen(s_window, 0);
   
   s_res_bitham_34_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS);
   s_res_image_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP);

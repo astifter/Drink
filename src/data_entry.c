@@ -19,7 +19,6 @@ static TextLayer *s_textlayer_3;
 
 static void initialise_ui(void) {
   s_window = window_create();
-  window_set_fullscreen(s_window, 0);
   
   s_res_image_plus = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PLUS);
   s_res_image_snooze = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SNOOZE);

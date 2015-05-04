@@ -16,7 +16,6 @@ static MenuLayer *s_menulayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
-  window_set_fullscreen(s_window, 0);
   
   // s_menulayer_1
   s_menulayer_1 = menu_layer_create(GRect(0, 0, 144, 152));

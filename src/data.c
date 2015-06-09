@@ -2,6 +2,7 @@
 
 #include "data.h"
 #include "watchface_base/logging_helper.h"
+#include "data_logging.h"
 
 #define STORAGE_ID 0x21124424
 DrinkData storage;
@@ -42,6 +43,7 @@ void storage_persist(void) {
 void storage_dobookkeeping(void) {
   LOG_FUNC();
   storage.drank_glasses = 0;
+  data_logging_do(data_logging_type_bookkeeping, storage.drank_glasses);
   storage_persist();
 }
 

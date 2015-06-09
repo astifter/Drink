@@ -2,6 +2,7 @@
   
 #include "counting_window.h"
 #include "data_entry.h"
+#include "data_logging.h"
 
 #include "data.h"
 #include "timing_handler.h"
@@ -27,8 +28,10 @@ void timing_callback(timing_handler_reason reason) {
 }
 
 int main(void) {
+  data_logging_init();
   storage_init();
   timing_handler_init(timing_callback);
   app_event_loop();
   storage_persist();
+  data_logging_destroy();
 }

@@ -5,6 +5,7 @@
 #include "data.h"
 #include "timing_handler.h"
 #include "watchface_base/logging_helper.h"
+#include "data_logging.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -80,6 +81,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   LOG_FUNC();
   storage.drank_glasses++;
   storage_persist();
+  data_logging_do(data_logging_type_glass, storage.drank_glasses);
   update_drank_glasses();
   timing_handler_reschedule();
 }
@@ -95,6 +97,7 @@ static void config_provider(void *ctx) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, snooze_click_handler);
 }
+
 static void config_provider_nosnooze(void *ctx) {
   LOG_FUNC();
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
@@ -108,6 +111,7 @@ static void handle_window_unload(Window* window) {
 void vibrate(void) {
   LOG_FUNC();
   if (storage.vibrate_on_reminder) {
+    data_logging_do(data_logging_type_vibrating, 0);
     static const uint32_t const segments[] = { 200, 100, 400 };
     VibePattern pat = {
       .durations = segments,
@@ -120,6 +124,7 @@ void vibrate(void) {
 static AppTimer* dismiss_timer;
 static void dismiss_timer_callback(void *data) {
   LOG_FUNC();
+  data_logging_do(data_logging_type_autodismissed, 0);
   hide_data_entry();
 }
 static AppTimer* vibrate_timer;

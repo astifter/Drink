@@ -5,6 +5,7 @@
 
 #include "data.h"
 #include "timing_handler.h"
+#include "data_logging.h"
   
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -84,6 +85,7 @@ static void update_drank_glasses(void) {
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   storage.drank_glasses++;
   storage_persist();
+  data_logging_do(data_logging_type_glass, storage.drank_glasses);
   update_drank_glasses();
   timing_handler_reschedule();
 }

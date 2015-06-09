@@ -3,6 +3,7 @@
 #include "timing_handler.h"
 #include "data.h"
 #include "watchface_base/logging_helper.h"
+#include "data_logging.h"
   
 timing_handler_callback callback;
 
@@ -30,6 +31,7 @@ static void reschedule(void) {
       } else {
         storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_timer, true);
       }
+      data_logging_do(data_logging_type_schedule_timer, storage.s_wakeup_id);
       storage_persist();
       return;
     }
@@ -39,6 +41,7 @@ static void reschedule(void) {
   schedule = mktime(lt);
   schedule += 3600*24;
   storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_firstday, true);
+  data_logging_do(data_logging_type_schedule_timer, storage.s_wakeup_id);
   storage_persist();
 }
 
@@ -58,6 +61,7 @@ static void reschedule_bookkeeping(void) {
   time_t schedule = mktime(lt);
   schedule += 3600*24;
   storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
+  data_logging_do(data_logging_type_schedule_bookkeeping, storage.s_bookkeeping_id);
   storage_persist();
 }
 
@@ -73,6 +77,7 @@ static void wakeup_handler(WakeupId id, int32_t reason) {
     reschedule_bookkeeping();
   }
 
+  data_logging_do(data_logging_type_wakeup_handler, reason);
   callback((timing_handler_reason)reason);
 }
 
@@ -86,6 +91,7 @@ static void timing_handler_handle(bool enable) {
     wakeup_cancel(storage.s_snooze_id);
     storage.s_wakeup_id = E_UNKNOWN;
     storage.s_snooze_id = E_UNKNOWN;
+    data_logging_do(data_logging_type_cancel_timer, 0);
     storage_persist();
   }
 }
@@ -111,6 +117,7 @@ void timing_handler_snooze(void) {
   time_t schedule = now + interval_seconds/3;
 
   storage.s_snooze_id = wakeup_schedule(schedule, timing_handler_reason_snoozed, true);
+  data_logging_do(data_logging_type_schedule_snooze, storage.s_snooze_id);
   storage_persist();
 }
 

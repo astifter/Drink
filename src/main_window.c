@@ -7,6 +7,7 @@
   
 #include "data.h"
 #include "timing_handler.h"
+#include "data_logging.h"
 
 static glasses_changed_callback callback;
 static GBitmap *s_help_qr_code;
@@ -62,6 +63,7 @@ void target_number_selected(int value) {
 
 void number_glasses_corrected(int value) {
   storage.drank_glasses = value;
+  data_logging_do(data_logging_type_corrected, storage.drank_glasses);
   store_and_update_reminder();
   layer_mark_dirty(menu_layer_get_layer(s_menulayer_1));
   callback();

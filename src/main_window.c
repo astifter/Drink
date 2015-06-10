@@ -38,8 +38,7 @@ static void destroy_ui(void) {
 void store_and_update_reminder(void) {
   storage_persist();
   if(storage.reminders_activated) {
-    timing_handler_cancel();
-    timing_handler_enable();
+    timing_handler_reschedule();
   } else {
     timing_handler_cancel();
   }

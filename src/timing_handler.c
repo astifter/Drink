@@ -7,18 +7,51 @@
   
 timing_handler_callback callback;
 
+void cancel(WakeupId* id) {
+  wakeup_cancel(*id);
+  (*id) = E_UNKNOWN;
+  storage_persist();
+}
+
+void re_schedule(WakeupId* id, time_t t, int reason, int logid) {
+  time_t now = time(NULL);
+  time_t scheduled;
+  bool schedule = false;
+  bool resschedule = false;
+  if (wakeup_query(*id, &scheduled)) {
+    // timer is scheduled, make sure its not in the past (which should not happen) and has same required timestamp
+    if (scheduled < now) {
+      data_logging_do(logid, data_logging_type_t_tolate);
+      cancel(id);
+      schedule = resschedule = true;
+    } 
+    if (scheduled != t) {
+      cancel(id);
+      schedule = resschedule = true;
+    }
+  } else {
+    schedule = true;
+  } 
+  
+  if (schedule) {
+    (*id) = wakeup_schedule(t, reason, true);
+    if (!resschedule)
+      data_logging_do3(logid, data_logging_type_t_scheduled, *id, t);
+    else
+      data_logging_do3(logid, data_logging_type_t_rescheduled, *id, t);
+    storage_persist();
+  }
+}
+
 static void reschedule(void) {
   LOG_FUNC();
 
-  wakeup_cancel(storage.s_wakeup_id);
-  storage.s_wakeup_id = E_UNKNOWN;
-  storage_persist();
-    
   time_t now; time(&now);
   struct tm *lt = localtime(&now);
 
   lt->tm_hour = storage.first_reminder.tm_hour;
   lt->tm_min  = storage.first_reminder.tm_min;
+  lt->tm_sec  = 0;
 
   time_t schedule = mktime(lt);
   for (int i = 0; i < storage.drank_glasses; i++) {
@@ -27,12 +60,10 @@ static void reschedule(void) {
   for (unsigned int i = storage.drank_glasses; i < storage.target_number; i++) {
     if (schedule > now) {
       if (i == 0) {
-        storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_firstday, true);
+        re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_firstday, data_logging_type_tim_timer);
       } else {
-        storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_timer, true);
+        re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_timer, data_logging_type_tim_timer);
       }
-      data_logging_do(data_logging_type_schedule_timer, storage.s_wakeup_id);
-      storage_persist();
       return;
     }
     schedule += ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
@@ -40,29 +71,22 @@ static void reschedule(void) {
 
   schedule = mktime(lt);
   schedule += 3600*24;
-  storage.s_wakeup_id = wakeup_schedule(schedule, timing_handler_reason_firstday, true);
-  data_logging_do(data_logging_type_schedule_timer, storage.s_wakeup_id);
-  storage_persist();
+  re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_firstday, data_logging_type_tim_timer);
 }
 
 static void reschedule_bookkeeping(void) {
   LOG_FUNC();
-
-  wakeup_cancel(storage.s_bookkeeping_id);
-  storage.s_bookkeeping_id = E_UNKNOWN;
-  storage_persist();
 
   time_t now; time(&now);
   struct tm *lt = localtime(&now);
 
   lt->tm_hour = 0;
   lt->tm_min  = 0;
+  lt->tm_sec  = 0;
 
   time_t schedule = mktime(lt);
   schedule += 3600*24;
-  storage.s_bookkeeping_id = wakeup_schedule(schedule, timing_handler_reason_bookkeeping, true);
-  data_logging_do(data_logging_type_schedule_bookkeeping, storage.s_bookkeeping_id);
-  storage_persist();
+  re_schedule(&storage.s_bookkeeping_id, schedule, timing_handler_reason_bookkeeping, data_logging_type_tim_bookkeeping);
 }
 
 static void wakeup_handler(WakeupId id, int32_t reason) {
@@ -91,7 +115,8 @@ static void timing_handler_handle(bool enable) {
     wakeup_cancel(storage.s_snooze_id);
     storage.s_wakeup_id = E_UNKNOWN;
     storage.s_snooze_id = E_UNKNOWN;
-    data_logging_do(data_logging_type_cancel_timer, 0);
+    data_logging_do(data_logging_type_tim_timer, data_logging_type_t_canceled);
+    data_logging_do(data_logging_type_tim_snooze, data_logging_type_t_canceled);
     storage_persist();
   }
 }
@@ -107,23 +132,15 @@ void timing_handler_cancel(void) {
 
 void timing_handler_snooze(void) {
   LOG_FUNC();
-  
-  wakeup_cancel(storage.s_snooze_id);
-  storage.s_snooze_id = E_UNKNOWN;
-  storage_persist();
 
   time_t now; time(&now);
   int interval_seconds = ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
   time_t schedule = now + interval_seconds/3;
 
-  storage.s_snooze_id = wakeup_schedule(schedule, timing_handler_reason_snoozed, true);
-  data_logging_do(data_logging_type_schedule_snooze, storage.s_snooze_id);
-  storage_persist();
+  re_schedule(&storage.s_snooze_id, schedule, timing_handler_reason_snoozed, data_logging_type_tim_snooze);
 }
 
 void timing_handler_reschedule(void) {
-  if (storage.s_wakeup_id == E_UNKNOWN) 
-    return;
   reschedule();
 }
 

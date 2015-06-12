@@ -7,10 +7,14 @@
   
 timing_handler_callback callback;
 
-void cancel(WakeupId* id) {
-  wakeup_cancel(*id);
-  (*id) = E_UNKNOWN;
-  storage_persist();
+void cancel(WakeupId* id, int logid) {
+  if ((*id) != E_UNKNOWN) {
+    wakeup_cancel(*id);
+    (*id) = E_UNKNOWN;
+    storage_persist();
+    if (logid >= 0)
+      data_logging_do(logid, data_logging_type_t_canceled);
+  }
 }
 
 void re_schedule(WakeupId* id, time_t t, int reason, int logid) {
@@ -22,11 +26,11 @@ void re_schedule(WakeupId* id, time_t t, int reason, int logid) {
     // timer is scheduled, make sure its not in the past (which should not happen) and has same required timestamp
     if (scheduled < now) {
       data_logging_do(logid, data_logging_type_t_tolate);
-      cancel(id);
+      cancel(id, logid);
       schedule = resschedule = true;
     } 
     if (scheduled != t) {
-      cancel(id);
+      cancel(id, logid);
       schedule = resschedule = true;
     }
   } else {
@@ -92,9 +96,7 @@ static void reschedule_bookkeeping(void) {
 static void wakeup_handler(WakeupId id, int32_t reason) {
   LOG_FUNC();
   if (reason == timing_handler_reason_snoozed) {
-    wakeup_cancel(storage.s_snooze_id);
-    storage.s_snooze_id = E_UNKNOWN;
-    storage_persist();
+    cancel(&storage.s_snooze_id, -1);
   } else if (reason == timing_handler_reason_timer || reason == timing_handler_reason_firstday) {
     reschedule();
   } else if (reason == timing_handler_reason_bookkeeping) {
@@ -111,13 +113,9 @@ static void timing_handler_handle(bool enable) {
   if (storage.s_wakeup_id == E_UNKNOWN && enable) {
     reschedule();
   } else if (storage.s_wakeup_id >= 0 && !enable) {
-    wakeup_cancel(storage.s_wakeup_id);
-    wakeup_cancel(storage.s_snooze_id);
-    storage.s_wakeup_id = E_UNKNOWN;
-    storage.s_snooze_id = E_UNKNOWN;
-    data_logging_do(data_logging_type_tim_timer, data_logging_type_t_canceled);
-    data_logging_do(data_logging_type_tim_snooze, data_logging_type_t_canceled);
-    storage_persist();
+    cancel(&storage.s_wakeup_id, data_logging_type_tim_timer);
+    cancel(&storage.s_snooze_id, data_logging_type_tim_snooze);
+    reschedule_bookkeeping();
   }
 }
 

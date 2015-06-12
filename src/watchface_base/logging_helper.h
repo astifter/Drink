@@ -13,6 +13,7 @@
 #define LOG_APPSYNC     0x00000008
 #define LOG_STORAGE     0x00000030
 #define LOG_STORAGE_SU  0x00000020
+#define LOG_DATA_LOG    0x00000040
 #define LOGENABLE       LOG_NONE
 
 #define LOG_EXT(WHAT,FMT,ARGS...) \

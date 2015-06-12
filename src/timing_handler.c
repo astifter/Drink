@@ -47,37 +47,6 @@ void re_schedule(WakeupId* id, time_t t, int reason, int logid) {
   }
 }
 
-static void reschedule(void) {
-  LOG_FUNC();
-
-  time_t now; time(&now);
-  struct tm *lt = localtime(&now);
-
-  lt->tm_hour = storage.first_reminder.tm_hour;
-  lt->tm_min  = storage.first_reminder.tm_min;
-  lt->tm_sec  = 0;
-
-  time_t schedule = mktime(lt);
-  for (int i = 0; i < storage.drank_glasses; i++) {
-    schedule += ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
-  }
-  for (unsigned int i = storage.drank_glasses; i < storage.target_number; i++) {
-    if (schedule > now) {
-      if (i == 0) {
-        re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_firstday, data_logging_type_tim_timer);
-      } else {
-        re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_timer, data_logging_type_tim_timer);
-      }
-      return;
-    }
-    schedule += ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
-  }
-
-  schedule = mktime(lt);
-  schedule += 3600*24;
-  re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_firstday, data_logging_type_tim_timer);
-}
-
 static void reschedule_bookkeeping(void) {
   LOG_FUNC();
 
@@ -93,6 +62,39 @@ static void reschedule_bookkeeping(void) {
   re_schedule(&storage.s_bookkeeping_id, schedule, timing_handler_reason_bookkeeping, data_logging_type_tim_bookkeeping);
 }
 
+static void reschedule(void) {
+  LOG_FUNC();
+
+  time_t now; time(&now);
+  struct tm *lt = localtime(&now);
+
+  if (storage.reminders_activated) {
+    lt->tm_hour = storage.first_reminder.tm_hour;
+    lt->tm_min  = storage.first_reminder.tm_min;
+    lt->tm_sec  = 0;
+
+    time_t schedule = mktime(lt);
+    for (int i = 0; i < storage.drank_glasses; i++) {
+      schedule += ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
+    }
+    for (unsigned int i = storage.drank_glasses; i < storage.target_number; i++) {
+      if (schedule > now) {
+        cancel(&storage.s_bookkeeping_id, data_logging_type_tim_bookkeeping);
+        if (i == 0) {
+          re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_firstday, data_logging_type_tim_timer);
+        } else {
+          re_schedule(&storage.s_wakeup_id, schedule, timing_handler_reason_timer, data_logging_type_tim_timer);
+        }
+        return;
+      }
+      schedule += ((storage.interval.tm_hour * 60) + storage.interval.tm_min) * 60;
+    }
+  }
+
+  cancel(&storage.s_wakeup_id, data_logging_type_tim_timer);
+  reschedule_bookkeeping();
+}
+
 static void wakeup_handler(WakeupId id, int32_t reason) {
   LOG_FUNC();
   if (reason == timing_handler_reason_snoozed) {
@@ -100,7 +102,7 @@ static void wakeup_handler(WakeupId id, int32_t reason) {
   } else if (reason == timing_handler_reason_timer || reason == timing_handler_reason_firstday) {
     reschedule();
   } else if (reason == timing_handler_reason_bookkeeping) {
-    reschedule_bookkeeping();
+    reschedule();
   }
 
   data_logging_do(data_logging_type_wakeup_handler, reason);
@@ -163,5 +165,5 @@ void timing_handler_init(timing_handler_callback c) {
     wakeup_handler(0, timing_handler_reason_startup);
   }
   
-  reschedule_bookkeeping();
+  reschedule();
 }

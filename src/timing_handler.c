@@ -97,6 +97,8 @@ static void reschedule(void) {
 
 static void wakeup_handler(WakeupId id, int32_t reason) {
   LOG_FUNC();
+  data_logging_do(data_logging_type_wakeup_handler, reason);
+
   if (reason == timing_handler_reason_snoozed) {
     cancel(&storage.s_snooze_id, -1);
   } else if (reason == timing_handler_reason_timer || reason == timing_handler_reason_firstday) {
@@ -105,7 +107,6 @@ static void wakeup_handler(WakeupId id, int32_t reason) {
     reschedule();
   }
 
-  data_logging_do(data_logging_type_wakeup_handler, reason);
   callback((timing_handler_reason)reason);
 }
 

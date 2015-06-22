@@ -1,6 +1,6 @@
 #include <pebble.h>
 
-#include "statistics.h"
+#include "stats_window.h"
 
 #include "data.h"
 #include "timing_handler.h"
@@ -77,7 +77,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-void show_statistics(void) {
+void show_stats_window(void) {
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
@@ -85,6 +85,6 @@ void show_statistics(void) {
   window_stack_push(s_window, true);
 }
 
-void hide_statistics(void) {
+void hide_stats_window(void) {
   window_stack_remove(s_window, true);
 }

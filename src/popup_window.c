@@ -1,6 +1,6 @@
 #include <pebble.h>
 
-#include "data_entry.h"
+#include "popup_window.h"
 
 #include "data.h"
 #include "timing_handler.h"
@@ -89,7 +89,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void snooze_click_handler(ClickRecognizerRef recognizer, void *context) {
   LOG_FUNC();
   timing_handler_snooze();
-  hide_data_entry();
+  hide_popup_window();
 }
 
 static void config_provider(void *ctx) {
@@ -125,7 +125,7 @@ static AppTimer* dismiss_timer;
 static void dismiss_timer_callback(void *data) {
   LOG_FUNC();
   data_logging_do(data_logging_type_autodismissed, 0);
-  hide_data_entry();
+  hide_popup_window();
 }
 static AppTimer* vibrate_timer;
 static void vibrate_timer_callback(void *data) {
@@ -133,7 +133,7 @@ static void vibrate_timer_callback(void *data) {
   vibrate();
 }
 
-void show_data_entry(bool hide_snoozing) {
+void show_popup_window(bool hide_snoozing) {
   LOG_FUNC();
   vibrate();
   vibrate_timer = app_timer_register(2*60*1000, vibrate_timer_callback, NULL);
@@ -154,7 +154,7 @@ void show_data_entry(bool hide_snoozing) {
     dismiss_timer = app_timer_register(5*60*1000, dismiss_timer_callback, NULL);
 }
 
-void hide_data_entry(void) {
+void hide_popup_window(void) {
   LOG_FUNC();
   app_timer_cancel(vibrate_timer);
   if (storage.auto_dismiss)

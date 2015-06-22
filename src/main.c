@@ -1,7 +1,7 @@
 #include <pebble.h>
   
-#include "counting_window.h"
-#include "data_entry.h"
+#include "main_window.h"
+#include "popup_window.h"
 #include "data_logging.h"
 
 #include "data.h"
@@ -10,16 +10,16 @@
 void timing_callback(timing_handler_reason reason) {
   switch(reason) {
     case timing_handler_reason_startup: {
-      show_counting_window(); 
+      show_main_window(); 
     } break;
     case timing_handler_reason_firstday: {
-      show_data_entry(false); 
+      show_popup_window(false); 
     } break;
     case timing_handler_reason_timer: {
-      show_data_entry(false); 
+      show_popup_window(false); 
     } break;
     case timing_handler_reason_snoozed: {
-      show_data_entry(true); 
+      show_popup_window(true); 
     } break;
     case timing_handler_reason_bookkeeping: {
       storage_dobookkeeping();

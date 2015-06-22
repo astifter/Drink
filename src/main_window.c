@@ -1,7 +1,7 @@
 #include <pebble.h>
 
-#include "counting_window.h"
 #include "main_window.h"
+#include "settings_window.h"
 
 #include "data.h"
 #include "timing_handler.h"
@@ -91,7 +91,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  show_main_window(update_drank_glasses);
+  show_settings_window(update_drank_glasses);
   update_drank_glasses();
 }
 
@@ -104,7 +104,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-void show_counting_window(void) {
+void show_main_window(void) {
   initialise_ui();
   action_bar_layer_set_click_config_provider(s_actionbarlayer_1, config_provider);
   update_drank_glasses();
@@ -114,6 +114,6 @@ void show_counting_window(void) {
   window_stack_push(s_window, true);
 }
 
-void hide_counting_window(void) {
+void hide_main_window(void) {
   window_stack_remove(s_window, true);
 }

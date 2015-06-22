@@ -1,9 +1,9 @@
 #include <pebble.h>
 
-#include "main_window.h"
+#include "settings_window.h"
 #include "time_selector.h"
 #include "int_selector.h"
-#include "statistics.h"
+#include "stats_window.h"
   
 #include "data.h"
 #include "timing_handler.h"
@@ -191,7 +191,7 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
     case 0:
       switch (cell_index->row) {
         case 0: {
-          show_statistics();
+          show_stats_window();
         } break;
       }
       break;
@@ -230,7 +230,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-void show_main_window(glasses_changed_callback c) {
+void show_settings_window(glasses_changed_callback c) {
   initialise_ui();
   callback = c;
   s_help_qr_code = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_QR_URL);
@@ -249,6 +249,6 @@ void show_main_window(glasses_changed_callback c) {
   window_stack_push(s_window, true);
 }
 
-void hide_main_window(void) {
+void hide_settings_window(void) {
   window_stack_remove(s_window, true);
 }
